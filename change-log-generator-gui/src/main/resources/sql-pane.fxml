@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.tuannguyen.liquibase.gui.helper.JFXTextAreaWrapper?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<VBox prefHeight="400.0" prefWidth="510.0" xmlns="http://javafx.com/javafx/8.0.71" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <JFXTextAreaWrapper fx:id="sqlTF" labelFloat="true" prefHeight="115.0" prefWidth="510.0" promptText="SQL">
+            <VBox.margin>
+                <Insets top="30.0"/>
+            </VBox.margin>
+        </JFXTextAreaWrapper>
+    </children>
+</VBox>
+

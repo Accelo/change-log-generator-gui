@@ -1,0 +1,60 @@
+.accordion .titled-pane .title {
+    -fx-background-color: white;
+    -fx-border-color: #1d1d1d transparent #1d1d1d transparent;
+    -fx-border-width: 1px;
+}
+
+.textField--error {
+    -fx-border-color: #cc444a;
+}
+
+.button-raised {
+    -fx-font-size: 14px;
+    -jfx-button-type: RAISED;
+    -fx-text-fill: white;
+}
+
+.button-raised--primary {
+    -fx-background-color: #2a7df6;
+}
+
+.button-raised--danger {
+    -fx-background-color: #cc444a;
+}
+
+.button-raised--success {
+    -fx-background-color: #53a451;
+}
+
+.button-raised--secondary {
+    -fx-background-color: #6d757c;
+}
+
+
+.button-raised--info {
+    -fx-background-color: #49a0b5;
+}
+
+.button-raised--warning {
+    -fx-background-color: #f7c244;
+    -fx-text-fill: black;
+}
+
+
+.button-raised--light {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: black;
+}
+
+.button-raised--dark {
+    -fx-background-color: #353a3f;
+}
+
+
+.button-raised--white {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+
+

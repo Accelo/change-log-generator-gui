@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0"
+      prefWidth="800.0" stylesheets="@change-log.css" xmlns="http://javafx.com/javafx/8.0.71"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuannguyen.liquibase.gui.ChangeLogController">
+    <children>
+        <MenuBar fx:id="menuBar">
+            <menus>
+                <Menu text="Help">
+                    <items>
+                        <MenuItem text="Version" onAction="#checkVersion"/>
+                        <MenuItem text="Check for updates" onAction="#checkForUpdates"/>
+                        <MenuItem text="Exit" onAction="#exit"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <Accordion fx:id="accordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                   minHeight="-Infinity" prefHeight="600" prefWidth="800.0" VBox.vgrow="ALWAYS">
+            <panes>
+                <TitledPane animated="false" text="Basic Information">
+                    <content>
+                        <fx:include fx:id="basic" source="basic-information.fxml"/>
+                    </content>
+                </TitledPane>
+                <TitledPane animated="false" expanded="false" text="Column Information">
+                    <content>
+                        <fx:include fx:id="change" source="change-information.fxml"/>
+                    </content>
+                </TitledPane>
+            </panes>
+        </Accordion>
+        <AnchorPane prefHeight="100.0" prefWidth="800.0">
+            <children>
+                <JFXButton layoutX="656.0" layoutY="12.0" onAction="#previewClicked" text="Preview">
+                    <styleClass>
+                        <String fx:value="button-raised"/>
+                        <String fx:value="button-raised--success"/>
+                    </styleClass>
+                </JFXButton>
+                <JFXButton layoutX="739.0" layoutY="12.0" onAction="#save" text="Save">
+                    <styleClass>
+                        <String fx:value="button-raised"/>
+                        <String fx:value="button-raised--primary"/>
+                    </styleClass>
+                </JFXButton>
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>
