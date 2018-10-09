@@ -48,7 +48,7 @@ public class PreviewPane extends JFXTabPane {
 
 	}
 
-	private Tab getXMLChangeLogTab(GenerateChangeConfiguration generateChangeConfiguration) {
+	private Tab getXMLChangeLogTab(GenerateChangeConfiguration generateChangeConfiguration) throws Exception {
 		StringWriter stringWriter = new StringWriter();
 		changeWriter.writeMultitenantChangeLog(generateChangeConfiguration, stringWriter);
 		Tab tab = new Tab(generateChangeConfiguration.getXmlChangeLogFile()
