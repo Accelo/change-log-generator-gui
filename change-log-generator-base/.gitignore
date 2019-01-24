@@ -1,0 +1,9 @@
+*.iml
+target
+.idea
+/sql/
+/tables/
+/triggers/
+/views/
+/xml/
+.DS_Store

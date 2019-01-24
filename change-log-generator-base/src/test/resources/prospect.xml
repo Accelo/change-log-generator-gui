@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet author="root (generated)" id="1500954457152-192" runOnChange="true">
+    <createView schemaName="accelo" viewName="prospect" replaceIfExists="true">
+select
+  `accelo_shared`.`prospect`.`id` AS `id`,
+  `accelo_shared`.`prospect`.`affiliation_id` AS `affiliation_id`,
+  `accelo_shared`.`prospect`.`staff_id` AS `staff_id`,
+  `accelo_shared`.`prospect`.`title` AS `title`,
+  `accelo_shared`.`prospect`.`type_id` AS `type_id`,
+  `accelo_shared`.`prospect`.`status` AS `status`,
+  `accelo_shared`.`prospect`.`created` AS `created`,
+  `accelo_shared`.`prospect`.`modified` AS `modified`,
+  `accelo_shared`.`prospect`.`actioned` AS `actioned`,
+  `accelo_shared`.`prospect`.`won_date` AS `won_date`,
+  `accelo_shared`.`prospect`.`won_by` AS `won_by`,
+  `accelo_shared`.`prospect`.`lost_date` AS `lost_date`,
+  `accelo_shared`.`prospect`.`lost_by` AS `lost_by`,
+  `accelo_shared`.`prospect`.`cancelled_date` AS `cancelled_date`,
+  `accelo_shared`.`prospect`.`cancelled_by` AS `cancelled_by`,
+  `accelo_shared`.`prospect`.`abandoned_date` AS `abandoned_date`,
+  `accelo_shared`.`prospect`.`abandoned_by` AS `abandoned_by`,
+  `accelo_shared`.`prospect`.`due` AS `due`,
+  `accelo_shared`.`prospect`.`status_id` AS `status_id`,
+  `accelo_shared`.`prospect`.`weighting` AS `weighting`,
+  `accelo_shared`.`prospect`.`value` AS `value`,
+  `accelo_shared`.`prospect`.`success` AS `success`,
+  `accelo_shared`.`prospect`.`comments` AS `comments`,
+  `accelo_shared`.`prospect`.`progress` AS `progress`,
+  `accelo_shared`.`prospect`.`probability_id` AS `probability_id`,
+  `accelo_shared`.`prospect`.`client_portal_permissions` AS `client_portal_permissions`,
+  `accelo_shared`.`prospect`.`last_interaction` AS `last_interaction`
+from `accelo_shared`.`prospect`
+where (`accelo_shared`.`prospect`.`accelo_deployment` = (SELECT id FROM accelo_shared.accelo_deployment WHERE username = CONVERT((SELECT SUBSTRING_INDEX(USER(),'@',1)) USING utf8mb4)))</createView>
+  </changeSet>
+</databaseChangeLog>
