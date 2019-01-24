@@ -24,6 +24,7 @@ public class GUIApp extends Application {
 		Pane                root                = fxmlLoader.getRoot();
 		changeLogController.setStage(primaryStage);
 		changeLogController.setBeanFactory(new BeanFactory());
+		changeLogController.init();
 		Scene scene = new Scene(root);
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);

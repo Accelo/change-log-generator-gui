@@ -1,5 +1,6 @@
 package com.tuannguyen.liquibase.gui;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.tuannguyen.liquibase.config.model.ChangeConfiguration;
 import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
 import com.tuannguyen.liquibase.gui.model.BasicInformation;
@@ -14,15 +15,21 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.net.NetworkInterface;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -63,21 +70,30 @@ public class ChangeLogController {
 	@FXML
 	private void checkForUpdates() {
 		try {
-			String latestVersion  = HttpUtil.get(S3_BUCKET_URL + "version");
-			String currentVersion = getVersion();
-
-			if (latestVersion.equals(currentVersion)) {
-				AlertUtil.showInformation(APP_NAME, "No updates available");
+			Optional<String> newVersion = getNewVersion();
+			if (newVersion.isPresent()) {
+				AlertUtil.showConfirmation(String.format("Update available: %s", newVersion.get()), "Do you want to update the app?", this::update);
 			} else {
-				update();
+				AlertUtil.showInformation(APP_NAME, "No updates available");
 			}
 		} catch (Exception e) {
 			AlertUtil.showError(e);
 		}
 	}
 
+	private Optional<String> getNewVersion() throws IOException, UnirestException {
+		String latestVersion  = HttpUtil.get(S3_BUCKET_URL + "version");
+		String currentVersion = getVersion();
+
+		if (!latestVersion.equals(currentVersion)) {
+			return Optional.of(latestVersion);
+		}
+		return Optional.empty();
+	}
+
 	private void update() {
 		final ProgressBarAlert progressBarAlert = AlertUtil.showProgressAlert("Updating...", APP_NAME);
+		progressBarAlert.setCloseListener(this::exit);
 		Consumer<Exception> showError = (exception) -> {
 			Platform.runLater(() -> {
 				progressBarAlert.setResult(ButtonType.CLOSE);
@@ -102,10 +118,12 @@ public class ChangeLogController {
 					         .deleteOnExit();
 					Files.move(currentDir, backupDir, StandardCopyOption.REPLACE_EXISTING);
 					Path unzippedFile = ZipUtil.unzip(downloadedFile);
+					updateConfigFile(Paths.get(unzippedFile.toString(), "ChangeLogGenerator.cfg"));
 					Files.move(unzippedFile, currentDir, StandardCopyOption.REPLACE_EXISTING);
 					Platform.runLater(() -> {
 						progressBarAlert.setHeaderText("Update completes.");
 						progressBarAlert.setDoneText("Please restart the app.");
+
 					});
 				} catch (Exception updateException) {
 					if (backupDir != null) {
@@ -125,14 +143,29 @@ public class ChangeLogController {
 		}
 	}
 
+	private void updateConfigFile(Path path) {
+		try {
+			String content = Files.lines(path).collect(Collectors.joining(System.lineSeparator()));
+			String appRuntime;
+			if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
+				appRuntime = "$APPDIR/PlugIns/Java.runtime";
+			} else {
+				appRuntime = "$APPDIR/runtime";
+			}
+			String newContent = content.replace("{app.runtime}", appRuntime);
+			Files.write(path, newContent.getBytes());
+		} catch (IOException e) {
+			AlertUtil.showError(e);
+		}
+	}
+
 	@FXML
 	private void checkVersion() throws IOException {
 		String version = getVersion();
 		AlertUtil.showInformation(APP_NAME, "Current Version: " + version);
 	}
 
-	@FXML
-	public void initialize() throws IOException {
+	public void init() throws IOException {
 		accordion.setExpandedPane(accordion
 				                          .getPanes()
 				                          .get(0));
@@ -146,6 +179,21 @@ public class ChangeLogController {
 				createVersionFile(versionFile);
 			} catch (Exception e) {
 				AlertUtil.showError(e);
+			}
+		}
+
+		if (InternetCheck.hasInternet()) {
+			try {
+				Optional<String> newVersion = getNewVersion();
+				Platform.runLater(() -> {
+					newVersion.ifPresent(s -> AlertUtil.showConfirmation(
+							String.format("Update available: %s", s),
+							"Do you want to update the app?",
+							this::update
+					));
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

@@ -8,6 +8,7 @@ import javafx.scene.control.TextArea;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 
 public class AlertUtil {
 	public static void showAlert(Alert.AlertType alertType,String contentText) {
@@ -29,6 +30,18 @@ public class AlertUtil {
 		dialog.getDialogPane().setContent(textArea);
 		dialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
 		dialog.showAndWait();
+	}
+
+	public static void showConfirmation(String title, String message, Runnable runnable) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Confirmation Dialog");
+		alert.setHeaderText(title);
+		alert.setContentText(message);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.orElse(ButtonType.CANCEL) == ButtonType.OK) {
+			runnable.run();
+		}
 	}
 
 	public static void showAlert(Alert.AlertType alertType,  String headerText, String contentText) {

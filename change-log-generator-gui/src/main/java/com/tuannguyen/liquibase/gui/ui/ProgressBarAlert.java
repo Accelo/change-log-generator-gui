@@ -6,6 +6,8 @@ import javafx.scene.layout.VBox;
 public class ProgressBarAlert extends Alert {
 	private ProgressBar progressBar;
 	private DialogPane  dialogPane;
+	private Runnable    closeListener = () -> {
+	};
 
 	public ProgressBarAlert(AlertType alertType) {
 		super(alertType);
@@ -21,8 +23,7 @@ public class ProgressBarAlert extends Alert {
 		vbox.getChildren()
 		    .add(progressBar);
 		dialogPane.setContent(vbox);
-		dialogPane.getButtonTypes()
-		          .setAll();
+		dialogPane.getButtonTypes().setAll();
 		dialogPane.setPrefWidth(350);
 		dialogPane.setPrefHeight(150);
 	}
@@ -32,5 +33,10 @@ public class ProgressBarAlert extends Alert {
 		dialogPane.setContent(label);
 		dialogPane.getButtonTypes()
 		          .setAll(ButtonType.CLOSE);
+		((Button) dialogPane.lookupButton(ButtonType.CLOSE)).setOnAction((e) -> closeListener.run());
+	}
+
+	public void setCloseListener(Runnable closeListener) {
+		this.closeListener = closeListener;
 	}
 }
