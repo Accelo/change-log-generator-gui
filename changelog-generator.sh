@@ -5,7 +5,7 @@ then
 	then
 		if [ ! -f changelog-generator.jar ]
 		then
-			artifact_path=`curl https://circleci.com/api/v1.1/project/github/vdtn359/liquibase-generator/latest/artifacts?circle-token=9e14e0e6de945b89ba412b687cfe8702e48d3803 | jq ".[0].url"`
+			artifact_path=`curl https://circleci.com/api/v1.1/project/github/vdtn359/changelog-generator-gui/latest/artifacts?circle-token=9e14e0e6de945b89ba412b687cfe8702e48d3803 | jq ".[0].url"`
 			artifact_path=${artifact_path:1:${#artifact_path} - 2}
 			echo "fetching from $artifact_path";
 			curl $artifact_path -o changelog-generator.jar
