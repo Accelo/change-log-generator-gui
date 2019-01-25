@@ -129,7 +129,7 @@ public class ChangeLogController {
 					if (backupDir != null) {
 						try {
 							FileUtils.emptyDirectory(currentDir);
-							Files.move(backupDir, currentDir);
+							Files.move(backupDir, currentDir, StandardCopyOption.REPLACE_EXISTING);
 						} catch (IOException ioException) {
 							showError.accept(new RuntimeException("Failed to restore back up", updateException));
 							return;
