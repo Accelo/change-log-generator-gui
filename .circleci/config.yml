@@ -70,8 +70,8 @@ workflows:
           requires:
             - build
           filters:
-            branches:
-              only: release
+            tags:
+              only: /^v.*/
 
 
 
