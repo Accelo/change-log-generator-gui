@@ -40,7 +40,7 @@ You can use wrapper instead of manually building the jar file.
 **Download the wrapper to your vbox**
 
 ```bash
-curl https://raw.githubusercontent.com/vdtn359/liquibase-generator/master/changelog-generator.sh -O
+curl https://raw.githubusercontent.com/vdtn359/change-log-generator-gui/master/changelog-generator.sh -O
 ```
 
 **Change permission**
