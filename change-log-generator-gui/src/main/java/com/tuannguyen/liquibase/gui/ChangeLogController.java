@@ -15,13 +15,10 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.File;
+import java.awt.*;
 import java.io.IOException;
-import java.net.NetworkInterface;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,7 +26,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -72,7 +68,11 @@ public class ChangeLogController {
 		try {
 			Optional<String> newVersion = getNewVersion();
 			if (newVersion.isPresent()) {
-				AlertUtil.showConfirmation(String.format("Update available: %s", newVersion.get()), "Do you want to update the app?", this::update);
+				AlertUtil.showConfirmation(
+						String.format("Update available: %s", newVersion.get()),
+						"Do you want to update the app?",
+						this::update
+				);
 			} else {
 				AlertUtil.showInformation(APP_NAME, "No updates available");
 			}
@@ -103,39 +103,35 @@ public class ChangeLogController {
 		};
 
 		try {
-			Path tempDir = Files.createTempDirectory("tmp");
-			tempDir.toFile()
-			       .deleteOnExit();
+			Path   tempDir        = Files.createTempDirectory("tmp");
 			String appFile        = "app.zip";
 			Path   downloadedFile = tempDir.resolve(appFile);
 
 			HttpUtil.save(S3_BUCKET_URL + appFile, downloadedFile, () -> {
-				Path backupDir = null;
 				try {
-					backupDir = Files.createTempDirectory("bak")
-					                 .resolve("app");
-					backupDir.toFile()
-					         .deleteOnExit();
-					Files.move(currentDir, backupDir, StandardCopyOption.REPLACE_EXISTING);
 					Path unzippedFile = ZipUtil.unzip(downloadedFile);
 					updateConfigFile(Paths.get(unzippedFile.toString(), "ChangeLogGenerator.cfg"));
-					Files.move(unzippedFile, currentDir, StandardCopyOption.REPLACE_EXISTING);
-					Platform.runLater(() -> {
-						progressBarAlert.setHeaderText("Update completes.");
-						progressBarAlert.setDoneText("Please restart the app.");
-
-					});
-				} catch (Exception updateException) {
-					if (backupDir != null) {
-						try {
-							FileUtils.emptyDirectory(currentDir);
-							Files.move(backupDir, currentDir, StandardCopyOption.REPLACE_EXISTING);
-						} catch (IOException ioException) {
-							showError.accept(new RuntimeException("Failed to restore back up", updateException));
-							return;
-						}
+					if (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows) {
+						Platform.runLater(() -> {
+							try {
+								progressBarAlert.setHeaderText("Update downloaded.");
+								progressBarAlert.setDoneText(
+										"Update libraries have been downloaded. Please close the application and move the patch to the app folder");
+								Desktop.getDesktop()
+								       .open(unzippedFile.toFile());
+							} catch (IOException e) {
+								showError.accept(e);
+							}
+						});
+					} else {
+						directUpdate(unzippedFile);
+						Platform.runLater(() -> {
+							progressBarAlert.setHeaderText("Update completes.");
+							progressBarAlert.setDoneText("Please restart the app.");
+						});
 					}
-					showError.accept(updateException);
+				} catch (IOException e) {
+					showError.accept(e);
 				}
 			});
 		} catch (Exception e) {
@@ -143,9 +139,28 @@ public class ChangeLogController {
 		}
 	}
 
+	private void directUpdate(Path unzippedFile) throws IOException {
+		Path backupDir = null;
+		try {
+			backupDir = Files.createTempDirectory("bak")
+			                 .resolve("app");
+			backupDir.toFile()
+			         .deleteOnExit();
+			Files.move(currentDir, backupDir, StandardCopyOption.REPLACE_EXISTING);
+			Files.move(unzippedFile, currentDir, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception updateException) {
+			if (backupDir != null) {
+				FileUtils.emptyDirectory(currentDir);
+				Files.move(backupDir, currentDir, StandardCopyOption.REPLACE_EXISTING);
+			}
+			throw updateException;
+		}
+	}
+
 	private void updateConfigFile(Path path) {
 		try {
-			String content = Files.lines(path).collect(Collectors.joining(System.lineSeparator()));
+			String content = Files.lines(path)
+			                      .collect(Collectors.joining(System.lineSeparator()));
 			String appRuntime;
 			if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
 				appRuntime = "$APPDIR/PlugIns/Java.runtime";

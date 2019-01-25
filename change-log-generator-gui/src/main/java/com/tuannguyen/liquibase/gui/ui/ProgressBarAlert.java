@@ -1,7 +1,10 @@
 package com.tuannguyen.liquibase.gui.ui;
 
+import javafx.geometry.VPos;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 public class ProgressBarAlert extends Alert {
 	private ProgressBar progressBar;
@@ -22,14 +25,16 @@ public class ProgressBarAlert extends Alert {
 		dialogPane = getDialogPane();
 		vbox.getChildren()
 		    .add(progressBar);
+		setResizable(true);
+		dialogPane.setPrefSize(450, 180);
 		dialogPane.setContent(vbox);
-		dialogPane.getButtonTypes().setAll();
-		dialogPane.setPrefWidth(350);
-		dialogPane.setPrefHeight(150);
+		dialogPane.getButtonTypes()
+		          .setAll();
 	}
 
 	public void setDoneText(String text) {
 		Label label = new Label(text);
+		label.setWrapText(true);
 		dialogPane.setContent(label);
 		dialogPane.getButtonTypes()
 		          .setAll(ButtonType.CLOSE);
