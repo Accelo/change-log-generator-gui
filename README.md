@@ -1,5 +1,5 @@
-[![CircleCI](https://circleci.com/gh/vdtn359/liquibase-generator.svg?style=svg)](https://circleci.com/gh/vdtn359/liquibase-generator)
-[![codecov](https://codecov.io/gh/vdtn359/liquibase-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/vdtn359/liquibase-generator)
+[![CircleCI](https://circleci.com/gh/vdtn359/change-log-generator-gui.svg?style=svg)](https://circleci.com/gh/vdtn359/change-log-generator-gui)
+[![codecov](https://codecov.io/gh/vdtn359/change-log-generator-gui/branch/master/graph/badge.svg)](https://codecov.io/gh/vdtn359/change-log-generator-gui)
 ![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)
 
 
