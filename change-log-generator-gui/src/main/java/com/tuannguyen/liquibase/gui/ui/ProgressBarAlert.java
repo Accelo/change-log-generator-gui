@@ -1,10 +1,7 @@
 package com.tuannguyen.liquibase.gui.ui;
 
-import javafx.geometry.VPos;
 import javafx.scene.control.*;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class ProgressBarAlert extends Alert {
 	private ProgressBar progressBar;

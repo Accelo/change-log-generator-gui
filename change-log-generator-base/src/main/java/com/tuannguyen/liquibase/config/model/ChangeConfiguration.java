@@ -14,10 +14,10 @@ import java.util.function.Predicate;
 @Getter
 @ToString
 public class ChangeConfiguration {
-	@PromptConfig(prompt = "type of modification", helpText = "(a)dd|(d)elete|(m)odify|(u)pdate|(r)ename|(s)ql", converter = ModificationTypeToStringConverter.class)
+	@PromptConfig(prompt = "type of modification", helpText = "(a)dd|(d)elete|(m)odify|(u)pdate|(r)ename|(s)ql|(dr)op table", converter = ModificationTypeToStringConverter.class)
 	private ModificationType modificationType;
 
-	@ConditionalOn(field = "modificationType", value = {"A", "M", "D", "U", "R"})
+	@ConditionalOn(field = "modificationType", value = {"A", "M", "D", "U", "R", "DR"})
 	@PromptConfig(prompt = "table")
 	private String table;
 

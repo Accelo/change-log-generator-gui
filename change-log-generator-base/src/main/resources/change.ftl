@@ -4,6 +4,24 @@
 				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 	<#list config.changeConfigurationList as change>
 		<#assign fallback_constraint_name=(change.table!'' + '_' + change.name!'')>
+		<#if change.modificationType.name() == 'DR'>
+			<changeSet author="${config.authorName}" id="${generator.getId()}">
+				<preConditions onFail="MARK_RAN">
+					<viewExists viewName="${change.table}"/>
+				</preConditions>
+				<dropView
+					schemaName="accelo"
+					viewName="${change.table}"/>
+			</changeSet>
+			<changeSet author="${config.authorName}" id="${generator.getId()}">
+				<preConditions onFail="MARK_RAN">
+					<tableExists tableName="${change.table}"/>
+				</preConditions>
+				<dropTable
+					schemaName="accelo_shared"
+					tableName="${change.table}"/>
+			</changeSet>
+		</#if>
 		<#if change.modificationType.name() == 'R'>
 	<changeSet author="${config.authorName}" id="${generator.getId()}">
 		<renameColumn

@@ -1,4 +1,7 @@
 <#list table_changes as table, changes>
+	<#list filterType(changes, ['DR'], false) as change>
+		<#lt>DROP TABLE IF EXISTS ${table};	${'\n'}
+	</#list>
 	<#list filterType(changes, ['A', 'D', 'M', 'R'], false) as change>
 		<#if change?is_first>
 			<#lt>ALTER table ${table}

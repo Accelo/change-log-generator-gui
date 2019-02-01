@@ -12,9 +12,13 @@ import com.tuannguyen.liquibase.util.io.XmlHelper;
 import lombok.extern.log4j.Log4j;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
@@ -84,6 +88,8 @@ public class ChangeWriter {
 				}
 				writeNewUpdateFile(generateChangeConfiguration);
 				xmlFile = generateChangeConfiguration.getXmlChangeLogFile();
+				removeReferences(generateChangeConfiguration);
+				dropOldFiles(generateChangeConfiguration);
 			}
 			try (Writer writer = Files.newBufferedWriter(xmlFile.toPath())) {
 				writeMultitenantChangeLog(generateChangeConfiguration, writer);
@@ -92,6 +98,77 @@ public class ChangeWriter {
 			throw new ResultException("Failed to write multi tenant changelog", e);
 		}
 	}
+
+	private void dropOldFiles(GenerateChangeConfiguration generateChangeConfiguration) {
+		generateChangeConfiguration
+				.getChangeConfigurationList()
+				.stream()
+				.filter(changeConfiguration -> changeConfiguration.getModificationType() == ModificationType.DR)
+				.forEach(changeConfiguration -> {
+					String table    = changeConfiguration.getTable();
+					File   viewDir  = generateChangeConfiguration.getXmlViewDir();
+					File   viewFile = new File(viewDir, table + ".xml");
+					if (viewFile.exists()) {
+						viewFile.delete();
+					}
+
+					File tableDir  = generateChangeConfiguration.getXmlTableDir();
+					File tableFile = new File(tableDir, table + ".xml");
+					if (tableFile.exists()) {
+						tableFile.delete();
+					}
+
+					File triggerDir  = generateChangeConfiguration.getXmlTriggerDir();
+					File triggerFile = new File(triggerDir, table + "_before_insert.xml");
+					if (triggerFile.exists()) {
+						triggerFile.delete();
+					}
+				});
+	}
+
+	private void removeReferences(GenerateChangeConfiguration generateChangeConfiguration) {
+		generateChangeConfiguration
+				.getChangeConfigurationList()
+				.stream()
+				.filter(changeConfiguration -> changeConfiguration.getModificationType() == ModificationType.DR)
+				.forEach(changeConfiguration -> {
+					String table    = changeConfiguration.getTable();
+					File   viewFile = generateChangeConfiguration.getViewFile();
+					try {
+						removeRow(viewFile, "views/" + table + ".xml");
+						File tableFile = generateChangeConfiguration.getTableFile();
+						removeRow(tableFile, "tables/" + table + ".xml");
+						File triggerFile = generateChangeConfiguration.getTriggerFile();
+						removeRow(triggerFile, "triggers/" + table + "_before_insert.xml");
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				});
+	}
+
+	private void removeRow(File file, String rowToRemove) throws IOException, SAXException,
+	                                                             ParserConfigurationException, TransformerException {
+		Document document = xmlHelper.getDocument(file);
+		Element documentElement = document.getDocumentElement();
+		NodeList nodeList = documentElement.getChildNodes();
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
+				continue;
+			}
+			Element element = (Element) nodeList.item(i);
+			if (rowToRemove.equals(element.getAttribute("file"))) {
+				Node prev = element.getPreviousSibling();
+				if (prev != null &&
+						prev.getNodeType() == Node.TEXT_NODE &&
+						prev.getNodeValue().trim().length() == 0) {
+					element.getParentNode().removeChild(prev);
+				}
+				documentElement.removeChild(element);
+			}
+		}
+		xmlHelper.writeDocument(document, Files.newOutputStream(file.toPath()), 4);
+	}
+
 
 	private void putColumnsInView(GenerateChangeConfiguration generateChangeConfiguration, File viewDir) {
 		for (ChangeConfiguration changeConfiguration : generateChangeConfiguration.getChangeConfigurationList()) {
@@ -123,7 +200,7 @@ public class ChangeWriter {
 
 		try {
 			File backupFile = Files.createTempFile("tmp", null)
-			                  .toFile();
+			                       .toFile();
 			Files.copy(updateFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			File tmpFile = Files.createTempFile("tmp", null)
 			                    .toFile();
@@ -166,7 +243,8 @@ public class ChangeWriter {
 		templateHelper.write(writer, "perl-update.ftl", data);
 	}
 
-	public void writeMultitenantChangeLog(GenerateChangeConfiguration generateChangeConfiguration, Writer writer) throws Exception {
+	public void writeMultitenantChangeLog(GenerateChangeConfiguration generateChangeConfiguration, Writer writer) throws
+	                                                                                                              Exception {
 		Map<String, Object> data = new HashMap<>();
 		data.put("generator", idGenerator);
 		data.put("config", generateChangeConfiguration);

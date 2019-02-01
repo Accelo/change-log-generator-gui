@@ -51,6 +51,7 @@ public class ChangeController {
 		subTypePaneMap.put(ModificationType.R, new RenamePane());
 		subTypePaneMap.put(ModificationType.S, new SQLPane());
 		subTypePaneMap.put(ModificationType.U, new UpdatePane());
+		subTypePaneMap.put(ModificationType.DR, new DropPane());
 
 		modificationTypeTF.setItems(FXCollections.observableArrayList(ModificationType.values()));
 		changeInformationList = FXCollections.observableArrayList();
@@ -87,6 +88,8 @@ public class ChangeController {
 						if (item != null && !empty) {
 							if (item.getModificationType() == ModificationType.S) {
 								setText("sql");
+							} else if (item.getModificationType() == ModificationType.DR) {
+								setText(item.getTable().trim());
 							} else {
 								String table = item.getTable()
 								                   .trim();

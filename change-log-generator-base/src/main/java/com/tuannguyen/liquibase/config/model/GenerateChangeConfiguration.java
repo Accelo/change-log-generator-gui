@@ -52,26 +52,43 @@ public class GenerateChangeConfiguration implements AfterPropertiesSet {
 
 	private File xmlChangeLogFile;
 
+	private File xmlTableDir;
+
+	private File xmlTriggerDir;
+
+	private File tableFile;
+
+	private File viewFile;
+
+	private File triggerFile;
+
 	@Override
 	public void afterPropertiesSet() {
 		if (!ObjectUtils.isEmptyString(baseProjectDir)) {
-			sqlDir = Paths.get(baseProjectDir, "bin", "updates", "dev").toFile();
-			xmlUpdatesDir = Paths.get(baseProjectDir, AFFINITY, SQL, "updates").toFile();
-			xmlViewDir = Paths.get(baseProjectDir, AFFINITY, SQL, "views").toFile();
-			updatesFile = Paths.get(baseProjectDir, AFFINITY, SQL, "updates.xml").toFile();
+			tableFile = Paths.get(baseProjectDir, AFFINITY, SQL, "tables.xml")
+			                   .toFile();
+			viewFile = Paths.get(baseProjectDir, AFFINITY, SQL, "views.xml")
+			                 .toFile();
+			triggerFile = Paths.get(baseProjectDir, AFFINITY, SQL, "triggers.xml")
+			                 .toFile();
 			File devDir = Paths.get(baseProjectDir, "bin", "updates", "dev")
-			              .toFile();
+			                   .toFile();
 			xmlUpdatesDir = Paths.get(baseProjectDir, AFFINITY, SQL, "updates")
+			                     .toFile();
+			xmlTableDir = Paths.get(baseProjectDir, AFFINITY, SQL, "tables")
+			                   .toFile();
+
+			xmlTriggerDir = Paths.get(baseProjectDir, AFFINITY, SQL, "triggers")
 			                     .toFile();
 			xmlViewDir = Paths.get(baseProjectDir, AFFINITY, SQL, "views")
 			                  .toFile();
 			updatesFile = Paths.get(baseProjectDir, AFFINITY, SQL, "updates.xml")
 			                   .toFile();
 			sqlDir = Paths.get(devDir.getAbsolutePath(), outputFileName)
-			                            .toFile();
+			              .toFile();
 			sqlFile = Paths.get(sqlDir.getAbsolutePath(), outputFileName + ".sql")
 			               .toFile();
-			perlFile = Paths.get(sqlDir.getAbsolutePath(),  "update.pl")
+			perlFile = Paths.get(sqlDir.getAbsolutePath(), "update.pl")
 			                .toFile();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String           date             = simpleDateFormat.format(new Date());
