@@ -9,9 +9,8 @@
 			FOR EACH ROW
 				BEGIN
 					DECLARE vDep varchar(50);
-					DECLARE vSeq varchar(50);
-					SELECT accelo.getDeploymentId() INTO vDep;
 					IF NEW.accelo_deployment IS NULL OR NEW.accelo_deployment = '' THEN
+						SELECT accelo.getDeploymentId() INTO vDep;
 						SET NEW.accelo_deployment = vDep;
 					END IF;
 						IF NEW.id IS NULL OR NEW.id &lt; 1 THEN
