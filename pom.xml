@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tuannguyen.liquibase</groupId>
+    <version>1.1.5</version>
     <artifactId>changelog-generator-parent</artifactId>
-    <version>1.1.4</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
