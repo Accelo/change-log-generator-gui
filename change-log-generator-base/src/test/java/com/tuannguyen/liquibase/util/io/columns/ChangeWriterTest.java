@@ -110,6 +110,15 @@ public class ChangeWriterTest
 								.value("b")
 								.build(),
 						ChangeConfiguration.builder()
+								.table("update_table")
+								.name("new_date")
+								.type("TIMESTAMP")
+								.modificationType(ModificationType.M)
+								.valueType(ValueType.COMPUTED)
+								.defaultValue("CURRENT_TIMESTAMP")
+								.extra("ON UPDATE CURRENT_TIMESTAMP")
+								.build(),
+						ChangeConfiguration.builder()
 								.table("unique_test")
 								.name("now_unique")
 								.modificationType(ModificationType.M)
@@ -139,6 +148,7 @@ public class ChangeWriterTest
 								.type("DATE")
 								.defaultValue("NOW()")
 								.valueType(ValueType.COMPUTED)
+								.extra("ON UPDATE CURRENT TIMESTAMP")
 								.modificationType(ModificationType.A)
 								.build(),
 						ChangeConfiguration.builder()
@@ -161,6 +171,7 @@ public class ChangeWriterTest
 								.table("job_settings")
 								.name("updated_date")
 								.newColumn("new_updated_date")
+								.type("DATE")
 								.modificationType(ModificationType.R)
 								.build(),
 						ChangeConfiguration.builder()

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.base.ValidatorBase;
 import com.tuannguyen.liquibase.config.model.BooleanWrapper;
 import com.tuannguyen.liquibase.config.model.ValueType;
@@ -15,7 +16,6 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextInputControl;
-import javafx.util.StringConverter;
 
 public class ModifyPane extends SubtypePane
 {
@@ -30,6 +30,9 @@ public class ModifyPane extends SubtypePane
 
 	@FXML
 	private JFXTextFieldWrapper typeTF;
+
+	@FXML
+	private JFXTextField extraTF;
 
 	@FXML
 	private JFXTextFieldWrapper defaultValueTF;
@@ -64,7 +67,9 @@ public class ModifyPane extends SubtypePane
 		{
 			@Override protected void eval()
 			{
-				if (nullableCb.getValue() != BooleanWrapper.NULL && "".equals(typeTF.getText().trim())) {
+				if ((nullableCb.getValue() != BooleanWrapper.NULL || !"".equals(extraTF.getText().trim())) && ""
+						.equals(typeTF.getText().trim()))
+				{
 					this.hasErrors.set(true);
 					this.setMessage("This field is required");
 				} else {
@@ -75,6 +80,10 @@ public class ModifyPane extends SubtypePane
 
 		initialiseTriState(uniqueCb);
 		initialiseTriState(nullableCb);
+
+		extraTF.textProperty().addListener((observable, oldValue, newValue) -> {
+			changeInformation.setExtra(newValue);
+		});
 
 		valueTypeCb.valueProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setValueType(newValue));
@@ -147,6 +156,8 @@ public class ModifyPane extends SubtypePane
 						.getValue());
 		nullableCb.valueProperty()
 				.setValue(changeInformation.getNullable());
+
+		extraTF.textProperty().setValue(changeInformation.getExtra());
 	}
 
 	@Override
@@ -155,6 +166,7 @@ public class ModifyPane extends SubtypePane
 		super.reset();
 		valueTypeCb.setValue(ValueType.STRING);
 		defaultValueTF.setText("");
+		extraTF.setText("");
 		nullableCb.setValue(BooleanWrapper.NULL);
 		uniqueCb.setValue(BooleanWrapper.NULL);
 	}

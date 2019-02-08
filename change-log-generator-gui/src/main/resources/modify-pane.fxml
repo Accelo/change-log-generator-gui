@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -73,5 +74,6 @@
                 </JFXComboBox>
             </children>
         </HBox>
+        <JFXTextField fx:id="extraTF" labelFloat="true" promptText="Extra"/>
     </children>
 </VBox>

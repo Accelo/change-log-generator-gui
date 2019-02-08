@@ -3,10 +3,8 @@ package com.tuannguyen.liquibase.gui.types;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.validation.Validator;
-
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import com.tuannguyen.liquibase.config.model.BooleanWrapper;
 import com.tuannguyen.liquibase.config.model.ValueType;
@@ -16,8 +14,6 @@ import com.tuannguyen.liquibase.gui.model.ChangeInformation;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextInputControl;
-import javafx.util.Pair;
-import javafx.util.StringConverter;
 
 public class AddPane extends SubtypePane
 {
@@ -32,6 +28,9 @@ public class AddPane extends SubtypePane
 
 	@FXML
 	private JFXTextFieldWrapper typeTF;
+
+	@FXML
+	private JFXTextField extraTF;
 
 	@FXML
 	private JFXTextFieldWrapper defaultValueTF;
@@ -81,6 +80,9 @@ public class AddPane extends SubtypePane
 				.addListener((observable, oldValue, newValue) -> {
 					changeInformation.setColumn(newValue);
 				});
+		extraTF.textProperty().addListener((observable, oldValue, newValue) -> {
+			changeInformation.setExtra(newValue);
+		});
 		defaultValueTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setDefaultValue(newValue));
 		typeTF.textProperty()
@@ -137,6 +139,7 @@ public class AddPane extends SubtypePane
 
 		afterColumn.textProperty()
 				.setValue(currentInformation.getAfterColumn());
+		extraTF.textProperty().setValue(currentInformation.getExtra());
 	}
 
 	@Override
@@ -147,5 +150,6 @@ public class AddPane extends SubtypePane
 		valueTypeCb.setValue(ValueType.STRING);
 		nullableToggle.setSelected(true);
 		uniqueToggle.setSelected(false);
+		extraTF.setText("");
 	}
 }

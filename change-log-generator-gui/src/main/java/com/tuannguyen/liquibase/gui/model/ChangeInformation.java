@@ -4,9 +4,7 @@ import com.tuannguyen.liquibase.config.model.BooleanWrapper;
 import com.tuannguyen.liquibase.config.model.ModificationType;
 import com.tuannguyen.liquibase.config.model.ValueType;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,6 +30,8 @@ public class ChangeInformation
 	private StringProperty where;
 
 	private StringProperty value;
+
+	private StringProperty extra;
 
 	private StringProperty sql;
 
@@ -134,7 +134,6 @@ public class ChangeInformation
 		return type;
 	}
 
-
 	public String getDefaultValue()
 	{
 		return defaultValue().get();
@@ -152,6 +151,25 @@ public class ChangeInformation
 			defaultValue = new SimpleStringProperty("");
 		}
 		return defaultValue;
+	}
+
+	public String getExtra()
+	{
+		return extra().get();
+	}
+
+	public void setExtra(String extra)
+	{
+		this.extra()
+				.set(extra);
+	}
+
+	public StringProperty extra()
+	{
+		if (extra == null) {
+			extra = new SimpleStringProperty("");
+		}
+		return extra;
 	}
 
 	public BooleanWrapper getNullable()

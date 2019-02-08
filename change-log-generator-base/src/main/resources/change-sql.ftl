@@ -7,7 +7,7 @@
 			<#lt>ALTER table ${table}
 		</#if>
 		<#if change.modificationType.name() == 'A'>
-			<#lt>ADD COLUMN ${change.name} ${change.type} <#if !change.nullable!true>NOT NULL </#if><#if change.defaultValue?has_content>DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.afterColumn?has_content> AFTER ${change.afterColumn}</#if><#rt>
+			<#lt>ADD COLUMN ${change.name} ${change.type} <#if !change.nullable!true>NOT NULL </#if><#if change.defaultValue?has_content>DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.afterColumn?has_content> AFTER ${change.afterColumn}</#if><#if change.extra?has_content> ${change.extra}</#if><#rt>
 		</#if>
 		<#if change.modificationType.name() == 'R'>
 			<#lt>RENAME COLUMN ${change.name} TO ${change.newColumn}<#rt>
@@ -17,7 +17,7 @@
 		</#if>
 		<#if change.modificationType.name() == 'M'>
 			<#if change.type?has_content>
-				<#lt>MODIFY COLUMN ${change.name} ${change.type}<#if change.defaultValue?has_content> DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.nullable?has_content><#if !change.nullable> NOT</#if> NULL</#if><#rt>
+				<#lt>MODIFY COLUMN ${change.name} ${change.type}<#if change.defaultValue?has_content> DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.nullable?has_content><#if !change.nullable> NOT</#if> NULL</#if><#if change.extra?has_content> ${change.extra}</#if><#rt>
 			<#else>
 				<#lt>ALTER COLUMN ${change.name} SET DEFAULT <#if change.defaultValue?has_content>${wrapValue(change, change.defaultValue)}</#if><#rt>
 			</#if>

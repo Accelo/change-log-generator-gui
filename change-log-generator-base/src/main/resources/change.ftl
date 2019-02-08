@@ -49,6 +49,11 @@
 			</column>
 				</#if>
 		</addColumn>
+		<#if change.extra?has_content>
+			<modifySql dbms="mysql">
+				<append value=" ${change.extra}"/>
+			</modifySql>
+		</#if>
 	</changeSet>
 		</#if>
 		<#if change.modificationType.name() == 'M'>
@@ -59,9 +64,9 @@
 			newDataType="${change.type}"
 			schemaName="${config.schema}"
 			tableName="${change.table}"/>
-		<#if change.nullable?has_content || change.defaultValue?has_content>
+		<#if change.nullable?has_content || change.defaultValue?has_content || change.extra?has_content>
 		<modifySql dbms="mysql">
-			<append value=" <#if change.nullable?has_content><#if !change.nullable>NOT</#if> NULL </#if><#if change.defaultValue?has_content>DEFAULT ${wrapValue(change, clean(change.defaultValue))}</#if>"/>
+			<append value="<#if change.nullable?has_content><#if !change.nullable> NOT</#if> NULL</#if><#if change.defaultValue?has_content> DEFAULT ${wrapValue(change, clean(change.defaultValue))}</#if><#if change.extra?has_content> ${change.extra}</#if>"/>
 		</modifySql>
 		</#if>
 	</changeSet>

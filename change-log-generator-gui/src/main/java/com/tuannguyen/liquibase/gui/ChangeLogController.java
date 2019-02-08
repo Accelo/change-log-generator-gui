@@ -295,6 +295,7 @@ public class ChangeLogController
 						.defaultValue(
 								changeInformation.getDefaultValue()
 						)
+						.extra(changeInformation.getExtra())
 						.valueType(changeInformation.getValueType())
 						.where(changeInformation.getWhere())
 						.newColumn(changeInformation.getNewColumn())

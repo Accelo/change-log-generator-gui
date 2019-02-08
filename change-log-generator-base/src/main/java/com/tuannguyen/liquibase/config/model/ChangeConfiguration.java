@@ -79,6 +79,10 @@ public class ChangeConfiguration
 	@PromptConfig(prompt = "afterColumn")
 	private String afterColumn;
 
+	@ConditionalOn(field = "modificationType", value = { "A", "M" })
+	@PromptConfig(prompt = "extra")
+	private String extra;
+
 	public static class UniqueConstraintPredicate implements Predicate<ChangeConfiguration>
 	{
 		@Override
