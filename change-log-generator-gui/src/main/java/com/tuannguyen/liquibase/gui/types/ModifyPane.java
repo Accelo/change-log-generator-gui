@@ -1,21 +1,22 @@
 package com.tuannguyen.liquibase.gui.types;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.tuannguyen.liquibase.config.model.BooleanWrapper;
 import com.tuannguyen.liquibase.gui.helper.DefaultCallbackListCell;
 import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper;
 import com.tuannguyen.liquibase.gui.model.ChangeInformation;
+
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextInputControl;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class ModifyPane extends SubtypePane {
-
+public class ModifyPane extends SubtypePane
+{
 	@FXML
 	private JFXTextFieldWrapper tableNameTF;
 
@@ -43,38 +44,44 @@ public class ModifyPane extends SubtypePane {
 	@FXML
 	private JFXComboBox<BooleanWrapper> nullableCb;
 
-	public ModifyPane() {
+	public ModifyPane()
+	{
 		super("/modify-pane.fxml");
 	}
 
 	@Override
-	public List<TextInputControl> textInputControlList() {
+	public List<TextInputControl> textInputControlList()
+	{
 		return Arrays.asList(typeTF, columnNameTF, constraintTF, tableNameTF, columnNameTF);
 	}
 
 	@FXML
-	public void initialize() {
+	public void initialize()
+	{
 		super.initialize();
 		quotedValue.disableProperty()
-		           .bind(Bindings.createBooleanBinding(
-				           () -> computedValue.selectedProperty()
-				                              .getValue(),
-				           computedValue.selectedProperty()
-		           ));
+				.bind(Bindings.createBooleanBinding(
+						() -> computedValue.selectedProperty()
+								.getValue(),
+						computedValue.selectedProperty()
+				));
 		computedValue.disableProperty()
-		             .bind(Bindings.createBooleanBinding(
-				             () -> quotedValue.selectedProperty()
-				                              .getValue(),
-				             quotedValue.selectedProperty()
-		             ));
+				.bind(Bindings.createBooleanBinding(
+						() -> quotedValue.selectedProperty()
+								.getValue(),
+						quotedValue.selectedProperty()
+				));
 		initialiseTriState(uniqueCb);
 		initialiseTriState(nullableCb);
 	}
 
-	private void initialiseTriState(JFXComboBox<BooleanWrapper> comboBox) {
-		DefaultCallbackListCell<BooleanWrapper> uniqueCellFactory = new DefaultCallbackListCell<BooleanWrapper>() {
+	private void initialiseTriState(JFXComboBox<BooleanWrapper> comboBox)
+	{
+		DefaultCallbackListCell<BooleanWrapper> uniqueCellFactory = new DefaultCallbackListCell<BooleanWrapper>()
+		{
 			@Override
-			public String getTitle(BooleanWrapper item) {
+			public String getTitle(BooleanWrapper item)
+			{
 				return item.getTitle();
 			}
 		};
@@ -87,66 +94,67 @@ public class ModifyPane extends SubtypePane {
 		comboBox.setCellFactory(uniqueCellFactory);
 
 		constraintTF.visibleProperty()
-		            .bind(Bindings.createBooleanBinding(
-				            () -> uniqueCb.getValue() != BooleanWrapper.NULL,
-				            uniqueCb.valueProperty()
-		            ));
+				.bind(Bindings.createBooleanBinding(
+						() -> uniqueCb.getValue() != BooleanWrapper.NULL,
+						uniqueCb.valueProperty()
+				));
 
 		tableNameTF.textProperty()
-		           .addListener((observable, oldValue, newValue) -> {
-			           changeInformation.setTable(newValue);
-		           });
+				.addListener((observable, oldValue, newValue) -> {
+					changeInformation.setTable(newValue);
+				});
 		columnNameTF.textProperty()
-		            .addListener((observable, oldValue, newValue) -> {
-			            changeInformation.setColumn(newValue);
-		            });
+				.addListener((observable, oldValue, newValue) -> {
+					changeInformation.setColumn(newValue);
+				});
 		defaultValueTF.textProperty()
-		              .addListener((observable, oldValue, newValue) -> changeInformation.setDefaultValue(newValue));
+				.addListener((observable, oldValue, newValue) -> changeInformation.setDefaultValue(newValue));
 		typeTF.textProperty()
-		      .addListener((observable, oldValue, newValue) -> changeInformation.setType(newValue));
+				.addListener((observable, oldValue, newValue) -> changeInformation.setType(newValue));
 		quotedValue.selectedProperty()
-		           .addListener((observable, oldValue, newValue) -> changeInformation.setQuoted(newValue));
+				.addListener((observable, oldValue, newValue) -> changeInformation.setQuoted(newValue));
 		computedValue.selectedProperty()
-		             .addListener((observable, oldValue, newValue) -> changeInformation.setComputed(newValue));
+				.addListener((observable, oldValue, newValue) -> changeInformation.setComputed(newValue));
 		constraintTF.textProperty()
-		            .addListener((observable, oldValue, newValue) -> changeInformation.setConstraintName(newValue));
+				.addListener((observable, oldValue, newValue) -> changeInformation.setConstraintName(newValue));
 		nullableCb.valueProperty()
-		          .addListener((observable, oldValue, newValue) -> changeInformation.setNullable(newValue));
+				.addListener((observable, oldValue, newValue) -> changeInformation.setNullable(newValue));
 		uniqueCb.valueProperty()
-		        .addListener((observable, oldValue, newValue) -> changeInformation.setUnique(newValue));
-
+				.addListener((observable, oldValue, newValue) -> changeInformation.setUnique(newValue));
 	}
 
 	@Override
-	public void setChangeInformation(ChangeInformation changeInformation) {
+	public void setChangeInformation(ChangeInformation changeInformation)
+	{
 		super.setChangeInformation(changeInformation);
 		tableNameTF.textProperty()
-		           .setValue(changeInformation.table()
-		                                      .getValue());
+				.setValue(changeInformation.table()
+						.getValue());
 		columnNameTF.textProperty()
-		            .setValue(changeInformation.column()
-		                                       .getValue());
+				.setValue(changeInformation.column()
+						.getValue());
 		defaultValueTF.textProperty()
-		              .setValue(changeInformation.defaultValue()
-		                                         .getValue());
+				.setValue(changeInformation.defaultValue()
+						.getValue());
 		typeTF.textProperty()
-		      .setValue(changeInformation.type()
-		                                 .getValue());
+				.setValue(changeInformation.type()
+						.getValue());
 		quotedValue.selectedProperty()
-		           .setValue(changeInformation.quoted()
-		                                      .getValue());
+				.setValue(changeInformation.quoted()
+						.getValue());
 		computedValue.selectedProperty()
-		             .setValue(changeInformation.computed()
-		                                        .getValue());
+				.setValue(changeInformation.computed()
+						.getValue());
 		constraintTF.textProperty()
-		            .setValue(changeInformation.constraintName()
-		                                       .getValue());
+				.setValue(changeInformation.constraintName()
+						.getValue());
 		nullableCb.valueProperty()
-		          .setValue(changeInformation.getNullable());
+				.setValue(changeInformation.getNullable());
 	}
 
 	@Override
-	public void reset() {
+	public void reset()
+	{
 		super.reset();
 		quotedValue.setSelected(false);
 		computedValue.setSelected(false);

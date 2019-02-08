@@ -1,5 +1,24 @@
 package com.tuannguyen.liquibase.util.io.columns;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.OptionalInt;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
 import com.tuannguyen.liquibase.config.model.ChangeConfiguration;
 import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
 import com.tuannguyen.liquibase.config.model.ModificationType;
@@ -7,30 +26,27 @@ import com.tuannguyen.liquibase.db.metadata.ColumnMetadata;
 import com.tuannguyen.liquibase.db.metadata.TableMetadata;
 import com.tuannguyen.liquibase.util.io.TemplateHelper;
 import com.tuannguyen.liquibase.util.io.XmlHelper;
-import lombok.extern.log4j.Log4j;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import lombok.extern.log4j.Log4j;
 
 @Log4j
-class ViewHandler {
-	private static final String                      METADATA_KEY = "metadata";
-	private              GenerateChangeConfiguration generateChangeConfiguration;
-	private              ChangeConfiguration         changeConfiguration;
-	private              TemplateHelper              templateHelper;
-	private              File                        viewFile;
-	private              XmlHelper                   xmlHelper;
+class ViewHandler
+{
+	private static final String METADATA_KEY = "metadata";
 
-	ViewHandler(GenerateChangeConfiguration generateChangeConfiguration, ChangeConfiguration changeConfiguration, TemplateHelper templateHelper, XmlHelper xmlHelper, File viewFile) {
+	private GenerateChangeConfiguration generateChangeConfiguration;
+
+	private ChangeConfiguration changeConfiguration;
+
+	private TemplateHelper templateHelper;
+
+	private File viewFile;
+
+	private XmlHelper xmlHelper;
+
+	ViewHandler(GenerateChangeConfiguration generateChangeConfiguration, ChangeConfiguration changeConfiguration,
+			TemplateHelper templateHelper, XmlHelper xmlHelper, File viewFile)
+	{
 		this.generateChangeConfiguration = generateChangeConfiguration;
 		this.changeConfiguration = changeConfiguration;
 		this.templateHelper = templateHelper;
@@ -38,7 +54,8 @@ class ViewHandler {
 		this.xmlHelper = xmlHelper;
 	}
 
-	void process() {
+	void process()
+	{
 		try {
 			if (changeConfiguration.getModificationType() == ModificationType.A) {
 				handleAddition();
@@ -56,7 +73,8 @@ class ViewHandler {
 		}
 	}
 
-	private void handleDeletion() throws ParserConfigurationException, IOException, SAXException {
+	private void handleDeletion() throws ParserConfigurationException, IOException, SAXException
+	{
 		Map<String, Object> parseData = getParseData();
 		TableMetadata tableMetadata = (TableMetadata) parseData.get(METADATA_KEY);
 		final List<ColumnMetadata> columnMetadataList = tableMetadata.getColumnMetadata();
@@ -68,7 +86,8 @@ class ViewHandler {
 		writeToFile(parseData);
 	}
 
-	private void handleAddition() throws ParserConfigurationException, IOException, SAXException {
+	private void handleAddition() throws ParserConfigurationException, IOException, SAXException
+	{
 		Map<String, Object> parseData = getParseData();
 		TableMetadata tableMetadata = (TableMetadata) parseData.get(METADATA_KEY);
 		final List<ColumnMetadata> columnMetadataList = tableMetadata.getColumnMetadata();
@@ -83,7 +102,8 @@ class ViewHandler {
 		writeToFile(parseData);
 	}
 
-	private void handleRename() throws ParserConfigurationException, IOException, SAXException {
+	private void handleRename() throws ParserConfigurationException, IOException, SAXException
+	{
 		Map<String, Object> parseData = getParseData();
 		TableMetadata tableMetadata = (TableMetadata) parseData.get(METADATA_KEY);
 		final List<ColumnMetadata> columnMetadataList = tableMetadata.getColumnMetadata();
@@ -95,17 +115,19 @@ class ViewHandler {
 		writeToFile(parseData);
 	}
 
-	private OptionalInt getIndex(List<ColumnMetadata> columnMetadataList, String name) {
+	private OptionalInt getIndex(List<ColumnMetadata> columnMetadataList, String name)
+	{
 		return IntStream.range(0, columnMetadataList.size())
-		         .filter(index -> columnMetadataList.get(index).getName().equals(name))
-		         .findFirst();
+				.filter(index -> columnMetadataList.get(index).getName().equals(name))
+				.findFirst();
 	}
 
-	private Map<String, Object> getParseData() throws ParserConfigurationException, IOException, SAXException {
+	private Map<String, Object> getParseData() throws ParserConfigurationException, IOException, SAXException
+	{
 		Document doc = xmlHelper.getDocument(viewFile);
 		Element rootElement = doc.getDocumentElement();
 		Element viewElement = (Element) doc.getElementsByTagName("createView").item(0);
-		String timestamp = ((Element)rootElement.getElementsByTagName("changeSet").item(0)).getAttribute("id");
+		String timestamp = ((Element) rootElement.getElementsByTagName("changeSet").item(0)).getAttribute("id");
 		String author = ((Element) doc.getElementsByTagName("changeSet").item(0)).getAttribute("author");
 		String content = viewElement.getTextContent();
 		String schema = generateChangeConfiguration.getSchema();
@@ -118,7 +140,8 @@ class ViewHandler {
 				return matcher.group(1);
 			}
 			return null;
-		}).filter(Objects::nonNull).map(column -> ColumnMetadata.builder().name(column).build()).collect(Collectors.toList());
+		}).filter(Objects::nonNull).map(column -> ColumnMetadata.builder().name(column).build())
+				.collect(Collectors.toList());
 		Map<String, Object> data = new HashMap<>();
 		TableMetadata tableMetadata = new TableMetadata(table, columnMetadataList, null);
 		data.put("timestamp", timestamp);
@@ -128,7 +151,8 @@ class ViewHandler {
 		return data;
 	}
 
-	private void writeToFile(Map<String, Object> data) {
+	private void writeToFile(Map<String, Object> data)
+	{
 		templateHelper.write(viewFile, "view.ftl", data);
 	}
 }

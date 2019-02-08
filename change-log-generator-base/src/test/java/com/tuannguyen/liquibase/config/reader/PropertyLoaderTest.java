@@ -1,30 +1,34 @@
 package com.tuannguyen.liquibase.config.reader;
 
+import java.io.IOException;
+import java.util.ArrayList;
 
-import com.tuannguyen.liquibase.config.model.DatabaseConfiguration;
-import com.tuannguyen.liquibase.config.model.GenerateTableConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import com.tuannguyen.liquibase.config.model.DatabaseConfiguration;
+import com.tuannguyen.liquibase.config.model.GenerateTableConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-public class PropertyLoaderTest {
-
+public class PropertyLoaderTest
+{
 	private PropertyLoader propertyLoader;
 
 	@Before
-	public void setup() throws IOException {
+	public void setup() throws IOException
+	{
 		propertyLoader = new PropertyLoader();
 		propertyLoader.load(null);
 	}
 
 	@Test
-	public void readConfiguration_givenValidPropertiesFile_shouldLoadCorrectConfiguration() throws InstantiationException, IllegalAccessException {
-		GenerateTableConfiguration actualConfiguration = propertyLoader.getConfiguration(GenerateTableConfiguration.class);
+	public void readConfiguration_givenValidPropertiesFile_shouldLoadCorrectConfiguration()
+			throws InstantiationException, IllegalAccessException
+	{
+		GenerateTableConfiguration actualConfiguration =
+				propertyLoader.getConfiguration(GenerateTableConfiguration.class);
 		GenerateTableConfiguration expectedConfiguration = GenerateTableConfiguration.builder()
 				.authorName("tuannguyen")
 				.databaseConfiguration(DatabaseConfiguration.builder()

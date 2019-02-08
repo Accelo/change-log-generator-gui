@@ -6,8 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
-public @interface ConfigList {
+@Target({ ElementType.FIELD })
+public @interface ConfigList
+{
 	String value() default "";
+
 	Class configurationClass();
 }

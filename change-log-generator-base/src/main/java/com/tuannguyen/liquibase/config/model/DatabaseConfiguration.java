@@ -1,7 +1,13 @@
 package com.tuannguyen.liquibase.config.model;
 
 import com.tuannguyen.liquibase.config.annotations.PromptConfig;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
@@ -9,7 +15,8 @@ import lombok.*;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class DatabaseConfiguration {
+public class DatabaseConfiguration
+{
 	@PromptConfig(config = "db.username", prompt = "Username")
 	private String username;
 

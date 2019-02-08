@@ -1,11 +1,28 @@
 package com.tuannguyen.liquibase.util.args;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ArgumentParser {
-	public ArgumentOptionResult parseArguments(String[] args, ArgumentSpec argumentSpec) {
+public class ArgumentParser
+{
+	private static String standardise(String key)
+	{
+		key = key.trim();
+		if (key.startsWith("--")) {
+			return key.substring(2);
+		} else if (key.startsWith("-")) {
+			return key.substring(1);
+		}
+		return key;
+	}
+
+	public ArgumentOptionResult parseArguments(String[] args, ArgumentSpec argumentSpec)
+	{
 		List<Command> commands = argumentSpec.commands();
 		if (args.length == 0) {
 			return null;
@@ -24,18 +41,23 @@ public class ArgumentParser {
 		return null;
 	}
 
-	private static class ArgumentMatcher {
+	private static class ArgumentMatcher
+	{
 		private String[] args;
+
 		private Command command;
+
 		private List<String> cmdParts;
 
-		ArgumentMatcher(String[] args, Command command) {
+		ArgumentMatcher(String[] args, Command command)
+		{
 			this.args = args;
 			this.command = command;
 			this.cmdParts = Arrays.asList(command.cmd().split("\\s+"));
 		}
 
-		ArgumentOptionResult matches() {
+		ArgumentOptionResult matches()
+		{
 			List<String> nonConfigArgs = new ArrayList<>();
 			Map<String, Object> configArgs = new HashMap<>();
 			int index = 0;
@@ -81,7 +103,9 @@ public class ArgumentParser {
 			if (needHelp) {
 				return new ArgumentOptionResult(configArgs, command, false);
 			}
-			List<String> requiredProperties = command.commandOptions().stream().filter(commandOption -> !commandOption.optional()).map(CommandOption::alias).collect(Collectors.toList());
+			List<String> requiredProperties =
+					command.commandOptions().stream().filter(commandOption -> !commandOption.optional())
+							.map(CommandOption::alias).collect(Collectors.toList());
 			Set<String> foundKeys = configArgs.keySet();
 			if (!foundKeys.containsAll(requiredProperties)) {
 				return new ArgumentOptionResult(configArgs, command, false);
@@ -89,18 +113,9 @@ public class ArgumentParser {
 			return new ArgumentOptionResult(configArgs, command, true);
 		}
 
-		private boolean isConfigArgument(String key) {
+		private boolean isConfigArgument(String key)
+		{
 			return key.startsWith("-") || key.startsWith("--");
 		}
-	}
-
-	private static String standardise(String key) {
-		key = key.trim();
-		if (key.startsWith("--")) {
-			return key.substring(2);
-		} else if (key.startsWith("-")) {
-			return key.substring(1);
-		}
-		return key;
 	}
 }

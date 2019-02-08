@@ -1,24 +1,31 @@
 package com.tuannguyen.liquibase.config.model;
 
-import com.tuannguyen.liquibase.config.annotations.ConfigList;
-import com.tuannguyen.liquibase.config.annotations.PromptConfig;
-import com.tuannguyen.liquibase.util.ObjectUtils;
-import lombok.*;
-
 import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.tuannguyen.liquibase.config.annotations.ConfigList;
+import com.tuannguyen.liquibase.config.annotations.PromptConfig;
+import com.tuannguyen.liquibase.util.ObjectUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
-public class GenerateChangeConfiguration implements AfterPropertiesSet {
+public class GenerateChangeConfiguration implements AfterPropertiesSet
+{
 	public static final String AFFINITY = "affinity";
-	public static final String SQL      = "sql";
+
+	public static final String SQL = "sql";
 
 	@PromptConfig(config = "db.author_name", prompt = "Author")
 	private String authorName;
@@ -63,43 +70,43 @@ public class GenerateChangeConfiguration implements AfterPropertiesSet {
 	private File triggerFile;
 
 	@Override
-	public void afterPropertiesSet() {
+	public void afterPropertiesSet()
+	{
 		if (!ObjectUtils.isEmptyString(baseProjectDir)) {
 			tableFile = Paths.get(baseProjectDir, AFFINITY, SQL, "tables.xml")
-			                   .toFile();
+					.toFile();
 			viewFile = Paths.get(baseProjectDir, AFFINITY, SQL, "views.xml")
-			                 .toFile();
+					.toFile();
 			triggerFile = Paths.get(baseProjectDir, AFFINITY, SQL, "triggers.xml")
-			                 .toFile();
+					.toFile();
 			File devDir = Paths.get(baseProjectDir, "bin", "updates", "dev")
-			                   .toFile();
+					.toFile();
 			xmlUpdatesDir = Paths.get(baseProjectDir, AFFINITY, SQL, "updates")
-			                     .toFile();
+					.toFile();
 			xmlTableDir = Paths.get(baseProjectDir, AFFINITY, SQL, "tables")
-			                   .toFile();
+					.toFile();
 
 			xmlTriggerDir = Paths.get(baseProjectDir, AFFINITY, SQL, "triggers")
-			                     .toFile();
+					.toFile();
 			xmlViewDir = Paths.get(baseProjectDir, AFFINITY, SQL, "views")
-			                  .toFile();
+					.toFile();
 			updatesFile = Paths.get(baseProjectDir, AFFINITY, SQL, "updates.xml")
-			                   .toFile();
+					.toFile();
 			sqlDir = Paths.get(devDir.getAbsolutePath(), outputFileName)
-			              .toFile();
+					.toFile();
 			sqlFile = Paths.get(sqlDir.getAbsolutePath(), outputFileName + ".sql")
-			               .toFile();
+					.toFile();
 			perlFile = Paths.get(sqlDir.getAbsolutePath(), "update.pl")
-			                .toFile();
+					.toFile();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String           date             = simpleDateFormat.format(new Date());
+			String date = simpleDateFormat.format(new Date());
 			File sqlFile = Paths.get(
 					xmlUpdatesDir.getAbsolutePath(),
 					String.format("%s-%s.xml", date, jiraNumber)
 			)
-			                    .toFile();
+					.toFile();
 
 			xmlChangeLogFile = sqlFile.getAbsoluteFile();
 		}
-
 	}
 }

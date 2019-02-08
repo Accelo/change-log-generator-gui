@@ -1,5 +1,7 @@
 package com.tuannguyen.liquibase.gui.types;
 
+import java.util.List;
+
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.jfoenix.validation.base.ValidatorBase;
 import com.tuannguyen.liquibase.gui.helper.JFXPristine;
@@ -7,35 +9,38 @@ import com.tuannguyen.liquibase.gui.helper.JFXTextAreaWrapper;
 import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper;
 import com.tuannguyen.liquibase.gui.helper.LoadablePane;
 import com.tuannguyen.liquibase.gui.model.ChangeInformation;
+
 import javafx.scene.control.TextInputControl;
 
-import java.util.List;
-
-public abstract class SubtypePane extends LoadablePane {
+public abstract class SubtypePane extends LoadablePane
+{
 	protected ChangeInformation changeInformation;
 
-	SubtypePane(String fxmlLocation) {
+	SubtypePane(String fxmlLocation)
+	{
 		super(fxmlLocation);
 	}
 
 	public abstract List<TextInputControl> textInputControlList();
 
-	public void initialize() {
+	public void initialize()
+	{
 		reset();
 		textInputControlList().forEach(field -> {
 			field.textProperty()
-			     .addListener((observable, oldValue, newValue) -> {
-				     if (field instanceof JFXPristine) {
-					     if (!((JFXPristine) field).isPristine()) {
-						     validate(field);
-					     }
-				     }
-			     });
+					.addListener((observable, oldValue, newValue) -> {
+						if (field instanceof JFXPristine) {
+							if (!((JFXPristine) field).isPristine()) {
+								validate(field);
+							}
+						}
+					});
 			setValidator(field);
 		});
 	}
 
-	public void reset() {
+	public void reset()
+	{
 		textInputControlList().forEach(textInputControl -> {
 			resetValidation(textInputControl);
 			if (textInputControl instanceof JFXPristine) {
@@ -45,7 +50,8 @@ public abstract class SubtypePane extends LoadablePane {
 		});
 	}
 
-	public boolean validate() {
+	public boolean validate()
+	{
 		boolean validate = true;
 		for (TextInputControl textInputControl : textInputControlList()) {
 			validate = validate & validate(textInputControl);
@@ -53,16 +59,8 @@ public abstract class SubtypePane extends LoadablePane {
 		return validate;
 	}
 
-	public void setChangeInformation(ChangeInformation currentInformation) {
-		this.changeInformation = currentInformation;
-		textInputControlList().forEach(field -> {
-			if (field instanceof JFXPristine) {
-				((JFXPristine) field).setPristine(true);
-			}
-		});
-	}
-
-	private void setValidator(TextInputControl textInputControl) {
+	private void setValidator(TextInputControl textInputControl)
+	{
 		ValidatorBase validator = new RequiredFieldValidator();
 		validator.setMessage("This field is not optional");
 		if (textInputControl instanceof JFXTextFieldWrapper) {
@@ -72,7 +70,8 @@ public abstract class SubtypePane extends LoadablePane {
 		}
 	}
 
-	private boolean validate(TextInputControl textInputControl) {
+	private boolean validate(TextInputControl textInputControl)
+	{
 		resetValidation(textInputControl);
 		if (!textInputControl.isVisible()) {
 			return true;
@@ -85,7 +84,8 @@ public abstract class SubtypePane extends LoadablePane {
 		return false;
 	}
 
-	private void resetValidation(TextInputControl textInputControl) {
+	private void resetValidation(TextInputControl textInputControl)
+	{
 		if (textInputControl instanceof JFXTextFieldWrapper) {
 			((JFXTextFieldWrapper) textInputControl).resetValidation();
 		} else if (textInputControl instanceof JFXTextAreaWrapper) {
@@ -93,7 +93,18 @@ public abstract class SubtypePane extends LoadablePane {
 		}
 	}
 
-	public ChangeInformation getChangeInformation() {
+	public ChangeInformation getChangeInformation()
+	{
 		return changeInformation;
+	}
+
+	public void setChangeInformation(ChangeInformation currentInformation)
+	{
+		this.changeInformation = currentInformation;
+		textInputControlList().forEach(field -> {
+			if (field instanceof JFXPristine) {
+				((JFXPristine) field).setPristine(true);
+			}
+		});
 	}
 }

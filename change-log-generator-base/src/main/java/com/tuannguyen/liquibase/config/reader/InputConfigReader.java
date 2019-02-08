@@ -1,28 +1,36 @@
 package com.tuannguyen.liquibase.config.reader;
 
-import com.tuannguyen.liquibase.config.ConfigException;
-import com.tuannguyen.liquibase.config.annotations.*;
-import com.tuannguyen.liquibase.config.model.AfterPropertiesSet;
-import com.tuannguyen.liquibase.util.ObjectUtils;
-import com.tuannguyen.liquibase.util.io.InputReader;
-import com.tuannguyen.liquibase.util.transform.Converter;
-import lombok.extern.log4j.Log4j;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.tuannguyen.liquibase.config.ConfigException;
+import com.tuannguyen.liquibase.config.annotations.ConditionalList;
+import com.tuannguyen.liquibase.config.annotations.ConditionalOn;
+import com.tuannguyen.liquibase.config.annotations.ConfigList;
+import com.tuannguyen.liquibase.config.annotations.ConfigWrapper;
+import com.tuannguyen.liquibase.config.annotations.PromptConfig;
+import com.tuannguyen.liquibase.config.model.AfterPropertiesSet;
+import com.tuannguyen.liquibase.util.ObjectUtils;
+import com.tuannguyen.liquibase.util.io.InputReader;
+import com.tuannguyen.liquibase.util.transform.Converter;
+
+import lombok.extern.log4j.Log4j;
+
 @Log4j
-public class InputConfigReader {
+public class InputConfigReader
+{
 	private InputReader inputReader;
 
-	public InputConfigReader(InputReader inputReader) {
+	public InputConfigReader(InputReader inputReader)
+	{
 		this.inputReader = inputReader;
 	}
 
-	<T> T getConfiguration(Class<T> configurationClass, Object defaultPropertyValues) {
+	<T> T getConfiguration(Class<T> configurationClass, Object defaultPropertyValues)
+	{
 		try {
 			T configuration = configurationClass.newInstance();
 			for (Field field : configurationClass.getDeclaredFields()) {
@@ -32,11 +40,11 @@ public class InputConfigReader {
 				field.setAccessible(true);
 				if (field.isAnnotationPresent(PromptConfig.class)) {
 					PromptConfig promptConfig = field.getAnnotation(PromptConfig.class);
-					Object       inputValue   = promptForInput(promptConfig, field.get(defaultPropertyValues));
+					Object inputValue = promptForInput(promptConfig, field.get(defaultPropertyValues));
 					field.set(configuration, inputValue);
 				} else if (field.isAnnotationPresent(ConfigWrapper.class)) {
 					Object defaultObjectValue = field.get(defaultPropertyValues);
-					Object object             = getConfiguration(field.getType(), defaultObjectValue);
+					Object object = getConfiguration(field.getType(), defaultObjectValue);
 					field.set(configuration, object);
 				} else if (field.isAnnotationPresent(ConfigList.class)) {
 					List<?> inputList = getInputList(field);
@@ -53,8 +61,9 @@ public class InputConfigReader {
 	}
 
 	private <T> boolean shouldDisplayField(Field field, T configuration) throws NoSuchFieldException,
-	                                                                            IllegalAccessException,
-	                                                                            InstantiationException {
+			IllegalAccessException,
+			InstantiationException
+	{
 		if (!field.isAnnotationPresent(ConditionalOn.class) && !field.isAnnotationPresent(ConditionalList.class)) {
 			return true;
 		}
@@ -62,20 +71,20 @@ public class InputConfigReader {
 		for (ConditionalOn conditionalOn : conditionalOnList) {
 			if (!Predicate.class.equals(conditionalOn.predicateClass())) {
 				Class<? extends Predicate> predicateClass = conditionalOn.predicateClass();
-				Predicate                  predicate      = predicateClass.newInstance();
+				Predicate predicate = predicateClass.newInstance();
 				if (!predicate.test(configuration)) {
 					return false;
 				}
 			} else {
-				String   fieldName      = conditionalOn.field();
+				String fieldName = conditionalOn.field();
 				String[] acceptedValues = conditionalOn.value();
 				Field dependentField = configuration.getClass()
-				                                    .getDeclaredField(fieldName);
+						.getDeclaredField(fieldName);
 				dependentField.setAccessible(true);
-				Object value       = dependentField.get(configuration);
+				Object value = dependentField.get(configuration);
 				String valueString = value instanceof Enum ? ((Enum) value).name() : value.toString();
 				boolean hasValue = Arrays.stream(acceptedValues)
-				                         .anyMatch(acceptedValue -> acceptedValue.equalsIgnoreCase(valueString));
+						.anyMatch(acceptedValue -> acceptedValue.equalsIgnoreCase(valueString));
 				if (!hasValue) {
 					return false;
 				}
@@ -84,7 +93,8 @@ public class InputConfigReader {
 		return true;
 	}
 
-	<T> T getRequiredConfiguration(Class<T> configurationClass, Object defaultPropertyValues) {
+	<T> T getRequiredConfiguration(Class<T> configurationClass, Object defaultPropertyValues)
+	{
 		try {
 			T configuration = configurationClass.newInstance();
 			for (Field field : configurationClass.getDeclaredFields()) {
@@ -95,7 +105,8 @@ public class InputConfigReader {
 				if (field.isAnnotationPresent(PromptConfig.class)) {
 					PromptConfig promptConfig = field.getAnnotation(PromptConfig.class);
 					if (!promptConfig.config()
-					                 .isEmpty()) {
+							.isEmpty())
+					{
 						//field is already initialise
 						field.set(configuration, field.get(defaultPropertyValues));
 						continue;
@@ -104,7 +115,7 @@ public class InputConfigReader {
 					field.set(configuration, inputValue);
 				} else if (field.isAnnotationPresent(ConfigWrapper.class)) {
 					Object defaultObjectValue = field.get(defaultPropertyValues);
-					Object object             = getRequiredConfiguration(field.getType(), defaultObjectValue);
+					Object object = getRequiredConfiguration(field.getType(), defaultObjectValue);
 					field.set(configuration, object);
 				} else if (field.isAnnotationPresent(ConfigList.class)) {
 					List<?> inputList = getInputList(field);
@@ -121,15 +132,16 @@ public class InputConfigReader {
 	}
 
 	private List<Object> getInputList(Field configurationField) throws IllegalAccessException, InstantiationException,
-	                                                                   NoSuchFieldException {
+			NoSuchFieldException
+	{
 		if (!(List.class.isAssignableFrom(configurationField.getType()))) {
 			throw new IllegalArgumentException("Not a list");
 		}
-		boolean      next;
-		ConfigList   annotation  = configurationField.getAnnotation(ConfigList.class);
-		Class        configClass = annotation.configurationClass();
-		List<Object> configList  = new ArrayList<>();
-		int          count       = 1;
+		boolean next;
+		ConfigList annotation = configurationField.getAnnotation(ConfigList.class);
+		Class configClass = annotation.configurationClass();
+		List<Object> configList = new ArrayList<>();
+		int count = 1;
 		do {
 			log.info(String.format("%s %d: %n", annotation.value(), count));
 			Object configuration = configClass.newInstance();
@@ -158,7 +170,8 @@ public class InputConfigReader {
 	}
 
 	private Object promptForInput(PromptConfig promptConfig, Object defaultValue) throws IllegalAccessException,
-	                                                                                     InstantiationException {
+			InstantiationException
+	{
 		defaultValue = ObjectUtils.defaultIfNull(defaultValue, "");
 		String defaultValueString = getStringValue(promptConfig, defaultValue);
 		String configValue = inputReader.readString(
@@ -170,7 +183,8 @@ public class InputConfigReader {
 	}
 
 	private String getStringValue(PromptConfig promptConfig, Object object) throws IllegalAccessException,
-	                                                                               InstantiationException {
+			InstantiationException
+	{
 		Class<? extends Converter> converterClass = promptConfig.converter();
 		if (Converter.class.equals(converterClass)) {
 			return (String) object;
@@ -181,7 +195,8 @@ public class InputConfigReader {
 	}
 
 	private Object getObjectValue(PromptConfig promptConfig, String string) throws IllegalAccessException,
-	                                                                               InstantiationException {
+			InstantiationException
+	{
 		Class<? extends Converter> converterClass = promptConfig.converter();
 		if (promptConfig.nullIfEmpty()) {
 			if (string == null || string.isEmpty()) {

@@ -1,5 +1,17 @@
 package com.tuannguyen.liquibase.util.handlers;
 
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
 import com.tuannguyen.liquibase.config.model.DatabaseConfiguration;
 import com.tuannguyen.liquibase.config.model.GenerateTableConfiguration;
 import com.tuannguyen.liquibase.config.reader.AppConfigurationReader;
@@ -10,26 +22,19 @@ import com.tuannguyen.liquibase.util.args.ArgumentOptionResult;
 import com.tuannguyen.liquibase.util.args.Command;
 import com.tuannguyen.liquibase.util.container.BeanFactory;
 import com.tuannguyen.liquibase.util.io.tables.TableWriter;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InOrder;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class GenerateTableHandlerTest {
+public class GenerateTableHandlerTest
+{
 	private GenerateTableHandler generateTableHandler;
+
 	@Mock
 	private BeanFactory beanFactory;
 
@@ -58,13 +63,15 @@ public class GenerateTableHandlerTest {
 	private ConnectionManager connectionManager;
 
 	@Before
-	public void setup() {
+	public void setup()
+	{
 		MockitoAnnotations.initMocks(this);
 		generateTableHandler = new GenerateTableHandler(beanFactory);
 		when(beanFactory.getAppConfigurationReader()).thenReturn(appConfigurationReader);
 		when(beanFactory.getDatabaseMetadaReader()).thenReturn(databaseMetadaReader);
 		when(beanFactory.getTableWriter()).thenReturn(tableWriter);
-		when(appConfigurationReader.readConfiguration(GenerateTableConfiguration.class)).thenReturn(generateTableConfiguration);
+		when(appConfigurationReader.readConfiguration(GenerateTableConfiguration.class))
+				.thenReturn(generateTableConfiguration);
 		when(databaseMetadaReader.readMetadata(eq(connectionManager), anyString())).thenReturn(tableMetadata);
 		when(beanFactory.getConnectionManager(anyObject())).thenReturn(connectionManager);
 		when(generateTableConfiguration.getGenerateTables()).thenReturn(Collections.singletonList("user"));
@@ -73,7 +80,8 @@ public class GenerateTableHandlerTest {
 	}
 
 	@Test
-	public void init_givenCorrectArguments_shouldReturnCorrectConfigurtaion() {
+	public void init_givenCorrectArguments_shouldReturnCorrectConfigurtaion()
+	{
 		Map<String, Object> argumentValues = new HashMap<>();
 		String fileName = "test.properties";
 		argumentValues.put("filename", fileName);
@@ -84,7 +92,8 @@ public class GenerateTableHandlerTest {
 	}
 
 	@Test
-	public void run_givenCorrectArguments_shouldPerformCorrectly() throws SQLException {
+	public void run_givenCorrectArguments_shouldPerformCorrectly() throws SQLException
+	{
 		ArgumentOptionResult argumentOptionResult = new ArgumentOptionResult(null, command, true);
 		generateTableHandler.run(argumentOptionResult, generateTableConfiguration);
 		verify(databaseMetadaReader).readMetadata(eq(connectionManager), eq("user"));

@@ -1,24 +1,28 @@
 package com.tuannguyen.liquibase.gui;
 
-import com.jfoenix.controls.JFXTabPane;
-import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
-import com.tuannguyen.liquibase.gui.util.AlertUtil;
-import com.tuannguyen.liquibase.util.io.columns.ChangeWriter;
-import javafx.scene.control.Tab;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
-public class PreviewPane extends JFXTabPane {
+import com.jfoenix.controls.JFXTabPane;
+import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
+import com.tuannguyen.liquibase.gui.util.AlertUtil;
+import com.tuannguyen.liquibase.util.io.columns.ChangeWriter;
+
+import javafx.scene.control.Tab;
+
+public class PreviewPane extends JFXTabPane
+{
 	private final ChangeWriter changeWriter;
 
-	public PreviewPane(ChangeWriter changeWriter) {
+	public PreviewPane(ChangeWriter changeWriter)
+	{
 		this.changeWriter = changeWriter;
 	}
 
-	public void setGenerateChangeConfiguration(GenerateChangeConfiguration generateChangeConfiguration) {
+	public void setGenerateChangeConfiguration(GenerateChangeConfiguration generateChangeConfiguration)
+	{
 		List<Tab> allTabs = getTabs();
 		allTabs.clear();
 
@@ -45,56 +49,59 @@ public class PreviewPane extends JFXTabPane {
 		} catch (Exception e) {
 			AlertUtil.showError(e);
 		}
-
 	}
 
-	private Tab getXMLChangeLogTab(GenerateChangeConfiguration generateChangeConfiguration) throws Exception {
+	private Tab getXMLChangeLogTab(GenerateChangeConfiguration generateChangeConfiguration) throws Exception
+	{
 		StringWriter stringWriter = new StringWriter();
 		changeWriter.writeMultitenantChangeLog(generateChangeConfiguration, stringWriter);
 		Tab tab = new Tab(generateChangeConfiguration.getXmlChangeLogFile()
-		                                             .getName());
+				.getName());
 		PreviewTab previewTab = new PreviewTab();
 		previewTab.setContent(generateChangeConfiguration.getXmlChangeLogFile()
-		                                                 .getAbsolutePath(), stringWriter.toString());
+				.getAbsolutePath(), stringWriter.toString());
 		tab.setContent(previewTab);
 		return tab;
 	}
 
-	private Tab getXMLUpdatesTab(GenerateChangeConfiguration generateChangeConfiguration) {
+	private Tab getXMLUpdatesTab(GenerateChangeConfiguration generateChangeConfiguration)
+	{
 		if (!generateChangeConfiguration.getUpdatesFile().exists()) {
 			return null;
 		}
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		changeWriter.writeNewUpdateFile(generateChangeConfiguration, byteArrayOutputStream);
 		Tab tab = new Tab(generateChangeConfiguration.getUpdatesFile()
-		                                             .getName());
+				.getName());
 		PreviewTab previewTab = new PreviewTab();
 		previewTab.setContent(generateChangeConfiguration.getUpdatesFile()
-		                                                 .getAbsolutePath(), byteArrayOutputStream.toString());
+				.getAbsolutePath(), byteArrayOutputStream.toString());
 		tab.setContent(previewTab);
 		return tab;
 	}
 
-	private Tab getPerlTab(GenerateChangeConfiguration generateChangeConfiguration) {
+	private Tab getPerlTab(GenerateChangeConfiguration generateChangeConfiguration)
+	{
 		StringWriter stringWriter = new StringWriter();
 		changeWriter.writePerlUpdate(generateChangeConfiguration, stringWriter);
 		Tab tab = new Tab(generateChangeConfiguration.getPerlFile()
-		                                             .getName());
+				.getName());
 		PreviewTab previewTab = new PreviewTab();
 		previewTab.setContent(generateChangeConfiguration.getPerlFile()
-		                                                 .getAbsolutePath(), stringWriter.toString());
+				.getAbsolutePath(), stringWriter.toString());
 		tab.setContent(previewTab);
 		return tab;
 	}
 
-	private Tab getSQLTab(GenerateChangeConfiguration generateChangeConfiguration) throws IOException {
+	private Tab getSQLTab(GenerateChangeConfiguration generateChangeConfiguration) throws IOException
+	{
 		StringWriter stringWriter = new StringWriter();
 		changeWriter.writeSingleTenantSQL(generateChangeConfiguration, stringWriter);
 		Tab tab = new Tab(generateChangeConfiguration.getSqlFile()
-		                                             .getName());
+				.getName());
 		PreviewTab previewTab = new PreviewTab();
 		previewTab.setContent(generateChangeConfiguration.getSqlFile()
-		                                                 .getAbsolutePath(), stringWriter.toString());
+				.getAbsolutePath(), stringWriter.toString());
 		tab.setContent(previewTab);
 		return tab;
 	}

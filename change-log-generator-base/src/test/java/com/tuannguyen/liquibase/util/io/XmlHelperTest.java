@@ -1,16 +1,5 @@
 package com.tuannguyen.liquibase.util.io;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -18,27 +7,46 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.stream.Collectors;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-public class XmlHelperTest {
+public class XmlHelperTest
+{
 	private XmlHelper xmlHelper;
 
 	@Before
-	public void setup() {
+	public void setup()
+	{
 		xmlHelper = new XmlHelper();
 	}
 
 	@Test
-	public void getDocument_givenValidFile_shouldReturnCorrectElement() throws URISyntaxException, IOException, SAXException, ParserConfigurationException {
+	public void getDocument_givenValidFile_shouldReturnCorrectElement()
+			throws URISyntaxException, IOException, SAXException, ParserConfigurationException
+	{
 		File file = new File(getClass().getResource("/prospect.xml").toURI());
 		System.out.println(Files.lines(file.toPath()).collect(Collectors.toList()));
 		Document document = xmlHelper.getDocument(file);
-		assertThat(((Element)document.getElementsByTagName("createView").item(0)).getAttribute("schemaName"), equalTo("accelo"));
+		assertThat(((Element) document.getElementsByTagName("createView").item(0)).getAttribute("schemaName"),
+				equalTo("accelo"));
 	}
 
 	@Test
-	public void writeDocument_givenValidXML_shouldOutputCorrectly() throws ParserConfigurationException, TransformerException {
+	public void writeDocument_givenValidXML_shouldOutputCorrectly()
+			throws ParserConfigurationException, TransformerException
+	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		// root elements

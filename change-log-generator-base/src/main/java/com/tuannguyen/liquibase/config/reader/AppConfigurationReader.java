@@ -1,29 +1,36 @@
 package com.tuannguyen.liquibase.config.reader;
 
+import java.lang.reflect.Field;
+
 import com.tuannguyen.liquibase.config.annotations.ConfigList;
 import com.tuannguyen.liquibase.config.annotations.ConfigWrapper;
 import com.tuannguyen.liquibase.config.annotations.PromptConfig;
+
 import lombok.extern.log4j.Log4j;
 
-import java.lang.reflect.Field;
-
 @Log4j
-public class AppConfigurationReader {
+public class AppConfigurationReader
+{
 	private InputConfigReader inputConfigReader;
+
 	private PropertyLoader propertyLoader;
+
 	private Boolean promptMode;
 
-	public AppConfigurationReader(InputConfigReader inputConfigReader, PropertyLoader propertyLoader) {
+	public AppConfigurationReader(InputConfigReader inputConfigReader, PropertyLoader propertyLoader)
+	{
 		this.inputConfigReader = inputConfigReader;
 		this.propertyLoader = propertyLoader;
 	}
 
-	public void init(String fileName, Boolean promptMode) {
+	public void init(String fileName, Boolean promptMode)
+	{
 		this.promptMode = promptMode;
 		propertyLoader.load(fileName);
 	}
 
-	public <T> T readConfiguration(Class<T> configurationClass) {
+	public <T> T readConfiguration(Class<T> configurationClass)
+	{
 		log.info("Reading configuration values");
 		T defaultPropertyValues = propertyLoader.getConfiguration(configurationClass);
 		T userConfigValue;
@@ -38,7 +45,8 @@ public class AppConfigurationReader {
 		return userConfigValue;
 	}
 
-	boolean requireUserInput(Class configurationClass) {
+	boolean requireUserInput(Class configurationClass)
+	{
 		for (Field field : configurationClass.getDeclaredFields()) {
 			if (field.isAnnotationPresent(ConfigList.class)) {
 				return true;

@@ -1,24 +1,33 @@
 package com.tuannguyen.liquibase.config.model;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.List;
+
 import com.tuannguyen.liquibase.config.annotations.ConfigWrapper;
 import com.tuannguyen.liquibase.config.annotations.PromptConfig;
 import com.tuannguyen.liquibase.util.ObjectUtils;
 import com.tuannguyen.liquibase.util.transform.ListToStringConverter;
-import lombok.*;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
-@EqualsAndHashCode(exclude = {"triggersDir", "viewsDir", "tableDir", "viewFile", "tableFile", "triggerFile"})
-public class GenerateTableConfiguration implements AfterPropertiesSet {
+@EqualsAndHashCode(exclude = { "triggersDir", "viewsDir", "tableDir", "viewFile", "tableFile", "triggerFile" })
+public class GenerateTableConfiguration implements AfterPropertiesSet
+{
 	public static final String AFFINITY = "affinity";
+
 	public static final String SQL = "sql";
+
 	@ConfigWrapper
 	private DatabaseConfiguration databaseConfiguration;
 
@@ -47,7 +56,8 @@ public class GenerateTableConfiguration implements AfterPropertiesSet {
 	private File triggerFile;
 
 	@Override
-	public void afterPropertiesSet() {
+	public void afterPropertiesSet()
+	{
 		if (!ObjectUtils.isEmptyString(baseProjectDir)) {
 			triggersDir = Paths.get(baseProjectDir, AFFINITY, SQL, "triggers").toFile();
 			viewsDir = Paths.get(baseProjectDir, AFFINITY, SQL, "views").toFile();

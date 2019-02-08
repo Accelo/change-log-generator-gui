@@ -1,17 +1,21 @@
 package com.tuannguyen.liquibase.config.model;
 
-public enum BooleanWrapper {
+public enum BooleanWrapper
+{
 	TRUE(true, "True"), FALSE(false, "False"), NULL(null, "Default");
 
 	private Boolean value;
-	private String  title;
 
-	BooleanWrapper(Boolean value, String title) {
+	private String title;
+
+	BooleanWrapper(Boolean value, String title)
+	{
 		this.value = value;
 		this.title = title;
 	}
 
-	public static BooleanWrapper of(Boolean value) {
+	public static BooleanWrapper of(Boolean value)
+	{
 		for (BooleanWrapper booleanWrapper : BooleanWrapper.values()) {
 			if (booleanWrapper.value == value) {
 				return booleanWrapper;
@@ -20,16 +24,19 @@ public enum BooleanWrapper {
 		return BooleanWrapper.NULL;
 	}
 
-	public Boolean getValue() {
+	public Boolean getValue()
+	{
 		return value;
 	}
 
-	public String getTitle() {
+	public String getTitle()
+	{
 		return title;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return title;
 	}
 }

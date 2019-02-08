@@ -4,11 +4,14 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.TextInputControl;
 
-public class PristineBehavior {
+public class PristineBehavior
+{
 	private BooleanProperty pristine;
+
 	private TextInputControl textInputControl;
 
-	public PristineBehavior(TextInputControl textInputControl) {
+	public PristineBehavior(TextInputControl textInputControl)
+	{
 		this.textInputControl = textInputControl;
 		this.textInputControl.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (isPristine() && newValue != null && !newValue.isEmpty()) {
@@ -17,20 +20,22 @@ public class PristineBehavior {
 		});
 	}
 
-
-	boolean isPristine() {
+	boolean isPristine()
+	{
 		return pristine().get();
 	}
 
-	BooleanProperty pristine() {
+	void setPristine(boolean pristine)
+	{
+		this.pristine()
+				.set(pristine);
+	}
+
+	BooleanProperty pristine()
+	{
 		if (pristine == null) {
 			pristine = new SimpleBooleanProperty(true);
 		}
 		return pristine;
-	}
-
-	void setPristine(boolean pristine) {
-		this.pristine()
-		    .set(pristine);
 	}
 }

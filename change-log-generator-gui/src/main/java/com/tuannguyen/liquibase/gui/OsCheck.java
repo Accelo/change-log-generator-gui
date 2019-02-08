@@ -1,18 +1,16 @@
 package com.tuannguyen.liquibase.gui;
 
 import java.util.Locale;
-public final class OsCheck {
-	/**
-	 * types of Operating Systems
-	 */
-	public enum OSType {
-		Windows, MacOS, Linux, Other
-	};
 
+public final class OsCheck
+{
 	// cached result of OS detection
 	private static OSType detectedOS;
 
-	public static OSType getOperatingSystemType() {
+	;
+
+	public static OSType getOperatingSystemType()
+	{
 		if (detectedOS == null) {
 			String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
 			if ((OS.contains("mac")) || (OS.contains("darwin"))) {
@@ -26,5 +24,13 @@ public final class OsCheck {
 			}
 		}
 		return detectedOS;
+	}
+
+	/**
+	 * types of Operating Systems
+	 */
+	public enum OSType
+	{
+		Windows, MacOS, Linux, Other
 	}
 }

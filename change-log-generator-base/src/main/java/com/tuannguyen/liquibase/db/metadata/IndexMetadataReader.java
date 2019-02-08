@@ -14,8 +14,10 @@ import java.util.Map;
 import static com.tuannguyen.liquibase.db.metadata.IndexMetadata.IndexPart.IndexDirection.ASC;
 import static com.tuannguyen.liquibase.db.metadata.IndexMetadata.IndexPart.IndexDirection.DESC;
 
-public class IndexMetadataReader {
-	List<IndexMetadata> getIndexMetadata(ConnectionManager connectionManager, String tableName) {
+public class IndexMetadataReader
+{
+	List<IndexMetadata> getIndexMetadata(ConnectionManager connectionManager, String tableName)
+	{
 		try {
 			Connection connection = connectionManager.getConnection();
 			DatabaseMetaData databaseMetaData = connection.getMetaData();

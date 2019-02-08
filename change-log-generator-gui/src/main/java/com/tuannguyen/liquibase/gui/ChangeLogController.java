@@ -1,22 +1,5 @@
 package com.tuannguyen.liquibase.gui;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.tuannguyen.liquibase.config.model.ChangeConfiguration;
-import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
-import com.tuannguyen.liquibase.gui.model.BasicInformation;
-import com.tuannguyen.liquibase.gui.model.ChangeInformation;
-import com.tuannguyen.liquibase.gui.ui.ProgressBarAlert;
-import com.tuannguyen.liquibase.gui.util.*;
-import com.tuannguyen.liquibase.util.container.BeanFactory;
-import com.tuannguyen.liquibase.util.io.columns.ChangeWriter;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.stage.Stage;
-
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,23 +12,39 @@ import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.tuannguyen.liquibase.config.model.ChangeConfiguration;
+import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
+import com.tuannguyen.liquibase.gui.model.BasicInformation;
+import com.tuannguyen.liquibase.gui.model.ChangeInformation;
+import com.tuannguyen.liquibase.gui.ui.ProgressBarAlert;
+import com.tuannguyen.liquibase.gui.util.AlertUtil;
+import com.tuannguyen.liquibase.gui.util.FileUtils;
+import com.tuannguyen.liquibase.gui.util.HttpUtil;
+import com.tuannguyen.liquibase.gui.util.PropertiesUtil;
+import com.tuannguyen.liquibase.gui.util.ZipUtil;
+import com.tuannguyen.liquibase.util.container.BeanFactory;
+import com.tuannguyen.liquibase.util.io.columns.ChangeWriter;
 
-public class ChangeLogController {
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.stage.Stage;
 
-	private static final String APP_NAME      = "ChangeLogGenerator";
-	public static final  String PROPERTY_FILE = "application.properties";
-	private              Stage  stage;
+public class ChangeLogController
+{
+	public static final String PROPERTY_FILE = "application.properties";
+
+	private static final String APP_NAME = "ChangeLogGenerator";
+
 	private static final String S3_BUCKET_URL = "https://s3-ap-southeast-2.amazonaws.com/change-log-generator/";
-	private              Path   currentDir;
 
-	{
-		currentDir = Paths.get(".")
-		                  .toAbsolutePath()
-		                  .normalize();
-		if ("test".equals(System.getProperty("profile"))) {
-			currentDir = currentDir.resolve("Java");
-		}
-	}
+	private Stage stage;
+
+	private Path currentDir;
 
 	@FXML
 	private Accordion accordion;
@@ -58,13 +57,24 @@ public class ChangeLogController {
 
 	private BeanFactory beanFactory;
 
+	{
+		currentDir = Paths.get(".")
+				.toAbsolutePath()
+				.normalize();
+		if ("test".equals(System.getProperty("profile"))) {
+			currentDir = currentDir.resolve("Java");
+		}
+	}
+
 	@FXML
-	private void exit() {
+	private void exit()
+	{
 		System.exit(0);
 	}
 
 	@FXML
-	private void checkForUpdates() {
+	private void checkForUpdates()
+	{
 		try {
 			Optional<String> newVersion = getNewVersion();
 			if (newVersion.isPresent()) {
@@ -81,8 +91,9 @@ public class ChangeLogController {
 		}
 	}
 
-	private Optional<String> getNewVersion() throws IOException, UnirestException {
-		String latestVersion  = HttpUtil.get(S3_BUCKET_URL + "version");
+	private Optional<String> getNewVersion() throws IOException, UnirestException
+	{
+		String latestVersion = HttpUtil.get(S3_BUCKET_URL + "version");
 		String currentVersion = getVersion();
 
 		if (!latestVersion.equals(currentVersion)) {
@@ -91,7 +102,8 @@ public class ChangeLogController {
 		return Optional.empty();
 	}
 
-	private void update() {
+	private void update()
+	{
 		final ProgressBarAlert progressBarAlert = AlertUtil.showProgressAlert("Updating...", APP_NAME);
 		progressBarAlert.setCloseListener(this::exit);
 		Consumer<Exception> showError = (exception) -> {
@@ -103,9 +115,9 @@ public class ChangeLogController {
 		};
 
 		try {
-			Path   tempDir        = Files.createTempDirectory("tmp");
-			String appFile        = "app.zip";
-			Path   downloadedFile = tempDir.resolve(appFile);
+			Path tempDir = Files.createTempDirectory("tmp");
+			String appFile = "app.zip";
+			Path downloadedFile = tempDir.resolve(appFile);
 
 			HttpUtil.save(S3_BUCKET_URL + appFile, downloadedFile, () -> {
 				try {
@@ -118,7 +130,7 @@ public class ChangeLogController {
 								progressBarAlert.setDoneText(
 										"Update libraries have been downloaded. Please close the application and move the patch to the app folder");
 								Desktop.getDesktop()
-								       .open(unzippedFile.toFile());
+										.open(unzippedFile.toFile());
 							} catch (IOException e) {
 								showError.accept(e);
 							}
@@ -139,13 +151,14 @@ public class ChangeLogController {
 		}
 	}
 
-	private void directUpdate(Path unzippedFile) throws IOException {
+	private void directUpdate(Path unzippedFile) throws IOException
+	{
 		Path backupDir = null;
 		try {
 			backupDir = Files.createTempDirectory("bak")
-			                 .resolve("app");
+					.resolve("app");
 			backupDir.toFile()
-			         .deleteOnExit();
+					.deleteOnExit();
 			Files.move(currentDir, backupDir, StandardCopyOption.REPLACE_EXISTING);
 			Files.move(unzippedFile, currentDir, StandardCopyOption.REPLACE_EXISTING);
 		} catch (Exception updateException) {
@@ -157,10 +170,11 @@ public class ChangeLogController {
 		}
 	}
 
-	private void updateConfigFile(Path path) {
+	private void updateConfigFile(Path path)
+	{
 		try {
 			String content = Files.lines(path)
-			                      .collect(Collectors.joining(System.lineSeparator()));
+					.collect(Collectors.joining(System.lineSeparator()));
 			String appRuntime;
 			if (OsCheck.getOperatingSystemType() == OsCheck.OSType.MacOS) {
 				appRuntime = "$APPDIR/PlugIns/Java.runtime";
@@ -175,21 +189,24 @@ public class ChangeLogController {
 	}
 
 	@FXML
-	private void checkVersion() throws IOException {
+	private void checkVersion() throws IOException
+	{
 		String version = getVersion();
 		AlertUtil.showInformation(APP_NAME, "Current Version: " + version);
 	}
 
-	public void init() throws IOException {
+	public void init() throws IOException
+	{
 		accordion.setExpandedPane(accordion
-				                          .getPanes()
-				                          .get(0));
+				.getPanes()
+				.get(0));
 		basicController.initialise(stage);
 		changeController.initialise(stage);
 		Path versionFile = Paths.get(".")
-		                        .resolve("version");
+				.resolve("version");
 		if (!versionFile.toFile()
-		                .exists()) {
+				.exists())
+		{
 			try {
 				createVersionFile(versionFile);
 			} catch (Exception e) {
@@ -213,18 +230,21 @@ public class ChangeLogController {
 		}
 	}
 
-	private void createVersionFile(Path versionFile) throws IOException {
+	private void createVersionFile(Path versionFile) throws IOException
+	{
 		Properties properties = PropertiesUtil.loadProperties(PROPERTY_FILE);
-		String     version    = normaliseVersion(properties.getProperty("version"));
+		String version = normaliseVersion(properties.getProperty("version"));
 		Files.write(versionFile, version.getBytes("utf-8"));
 	}
 
-	public void setBeanFactory(BeanFactory beanFactory) {
+	public void setBeanFactory(BeanFactory beanFactory)
+	{
 		this.beanFactory = beanFactory;
 	}
 
 	@FXML
-	public void previewClicked() {
+	public void previewClicked()
+	{
 		boolean validate = validate();
 		if (!validate) {
 			return;
@@ -237,13 +257,13 @@ public class ChangeLogController {
 		PreviewPane previewPane = new PreviewPane(beanFactory.getChangeWriter());
 		previewPane.setGenerateChangeConfiguration(getGenerateChangeConfiguration());
 		dialog.getDialogPane()
-		      .setContent(previewPane);
+				.setContent(previewPane);
 		dialog.getDialogPane()
-		      .getButtonTypes()
-		      .add(ButtonType.OK);
+				.getButtonTypes()
+				.add(ButtonType.OK);
 		dialog.getDialogPane()
-		      .getButtonTypes()
-		      .add(ButtonType.CANCEL);
+				.getButtonTypes()
+				.add(ButtonType.CANCEL);
 		dialog.setResultConverter(param -> {
 			if (param == ButtonType.OK) {
 				writeFiles();
@@ -254,40 +274,41 @@ public class ChangeLogController {
 		dialog.showAndWait();
 	}
 
-	private GenerateChangeConfiguration getGenerateChangeConfiguration() {
-		BasicInformation        basicInformation      = basicController.getBasicInformation();
+	private GenerateChangeConfiguration getGenerateChangeConfiguration()
+	{
+		BasicInformation basicInformation = basicController.getBasicInformation();
 		List<ChangeInformation> changeInformationList = changeController.getChangeList();
 
 		List<ChangeConfiguration> changeConfigurations
 				= changeInformationList.stream()
-				                       .map(changeInformation -> ChangeConfiguration
-						                       .builder()
-						                       .modificationType(changeInformation.getModificationType())
-						                       .table(changeInformation.getTable())
-						                       .type(changeInformation.getType())
-						                       .name(changeInformation.getColumn())
-						                       .nullable(changeInformation.getNullable()
-						                                                  .getValue())
-						                       .unique(changeInformation.getUnique()
-						                                                .getValue())
-						                       .uniqueConstraintName(changeInformation.getConstraintName())
-						                       .defaultValue(
-								                       changeInformation.isQuoted() ? getQuoted(
-										                       changeInformation.getDefaultValue()) :
-										                       changeInformation.getDefaultValue()
-						                       )
-						                       .where(changeInformation.getWhere())
-						                       .value(
-								                       changeInformation.isQuoted() ? getQuoted(
-										                       changeInformation.getValue()) :
-										                       changeInformation.getValue()
-						                       )
-						                       .newColumn(changeInformation.getNewColumn())
-						                       .sql(changeInformation.getSql())
-						                       .afterColumn(changeInformation.getAfterColumn())
-						                       .build())
-				                       .collect(
-						                       Collectors.toList());
+				.map(changeInformation -> ChangeConfiguration
+						.builder()
+						.modificationType(changeInformation.getModificationType())
+						.table(changeInformation.getTable())
+						.type(changeInformation.getType())
+						.name(changeInformation.getColumn())
+						.nullable(changeInformation.getNullable()
+								.getValue())
+						.unique(changeInformation.getUnique()
+								.getValue())
+						.uniqueConstraintName(changeInformation.getConstraintName())
+						.defaultValue(
+								changeInformation.isQuoted() ? getQuoted(
+										changeInformation.getDefaultValue()) :
+										changeInformation.getDefaultValue()
+						)
+						.where(changeInformation.getWhere())
+						.value(
+								changeInformation.isQuoted() ? getQuoted(
+										changeInformation.getValue()) :
+										changeInformation.getValue()
+						)
+						.newColumn(changeInformation.getNewColumn())
+						.sql(changeInformation.getSql())
+						.afterColumn(changeInformation.getAfterColumn())
+						.build())
+				.collect(
+						Collectors.toList());
 
 		GenerateChangeConfiguration generateChangeConfiguration
 				= GenerateChangeConfiguration
@@ -310,7 +331,8 @@ public class ChangeLogController {
 	}
 
 	@FXML
-	public void save() {
+	public void save()
+	{
 		boolean validate = validate();
 		if (!validate) {
 			return;
@@ -318,9 +340,10 @@ public class ChangeLogController {
 		writeFiles();
 	}
 
-	private void writeFiles() {
+	private void writeFiles()
+	{
 		try {
-			ChangeWriter                changeWriter                = beanFactory.getChangeWriter();
+			ChangeWriter changeWriter = beanFactory.getChangeWriter();
 			GenerateChangeConfiguration generateChangeConfiguration = getGenerateChangeConfiguration();
 			changeWriter.writeSingleTenantChange(generateChangeConfiguration);
 			changeWriter.writeMultitenantChange(generateChangeConfiguration);
@@ -331,11 +354,13 @@ public class ChangeLogController {
 		}
 	}
 
-	private String getQuoted(String value) {
+	private String getQuoted(String value)
+	{
 		return String.format("'%s'", value);
 	}
 
-	private boolean validate() {
+	private boolean validate()
+	{
 		boolean error = false;
 		if (!changeController.validate()) {
 			expandPane(1);
@@ -348,21 +373,25 @@ public class ChangeLogController {
 		return !error;
 	}
 
-	private void expandPane(int index) {
+	private void expandPane(int index)
+	{
 		accordion.setExpandedPane(accordion
-				                          .getPanes()
-				                          .get(index));
+				.getPanes()
+				.get(index));
 	}
 
-	public void setStage(Stage stage) {
+	public void setStage(Stage stage)
+	{
 		this.stage = stage;
 	}
 
-	private String normaliseVersion(String version) {
+	private String normaliseVersion(String version)
+	{
 		return version.replace("-SNAPSHOT", "");
 	}
 
-	private String getVersion() throws IOException {
+	private String getVersion() throws IOException
+	{
 		Path versionFile = currentDir.resolve("version");
 		return new String(Files.readAllBytes(versionFile), "utf-8");
 	}

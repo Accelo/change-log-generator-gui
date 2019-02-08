@@ -5,8 +5,10 @@ import com.tuannguyen.liquibase.db.metadata.adapters.column.ColumnMetadataAdapte
 
 import java.util.List;
 
-public class ColumnMetadataReader {
-	List<ColumnMetadata> getColumnMetadata(ConnectionManager connectionManager, String tableName) {
+public class ColumnMetadataReader
+{
+	List<ColumnMetadata> getColumnMetadata(ConnectionManager connectionManager, String tableName)
+	{
 		ColumnMetadataAdapter columnMetadataAdapter = connectionManager.getColumnMetadataAdapter();
 		return columnMetadataAdapter.getColumnMetadata(tableName);
 	}

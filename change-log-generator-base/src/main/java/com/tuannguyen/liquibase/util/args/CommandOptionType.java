@@ -1,5 +1,6 @@
 package com.tuannguyen.liquibase.util.args;
 
-public enum CommandOptionType {
+public enum CommandOptionType
+{
 	STRING, NUMBER, BOOLEAN
 }

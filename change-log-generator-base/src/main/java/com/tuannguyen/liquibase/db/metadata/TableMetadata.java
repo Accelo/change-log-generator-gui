@@ -9,8 +9,11 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @ToString
-public class TableMetadata {
+public class TableMetadata
+{
 	private String name;
+
 	private List<ColumnMetadata> columnMetadata;
+
 	private List<IndexMetadata> indexMetadata;
 }

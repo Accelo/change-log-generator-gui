@@ -1,22 +1,25 @@
 package com.tuannguyen.liquibase.db.metadata.adapters.column;
 
-import com.tuannguyen.liquibase.db.ConnectionManager;
-import com.tuannguyen.liquibase.db.JdbcException;
-import com.tuannguyen.liquibase.db.metadata.ColumnMetadata;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultColumnMetadataAdapter implements ColumnMetadataAdapter {
+import com.tuannguyen.liquibase.db.ConnectionManager;
+import com.tuannguyen.liquibase.db.JdbcException;
+import com.tuannguyen.liquibase.db.metadata.ColumnMetadata;
+
+public class DefaultColumnMetadataAdapter implements ColumnMetadataAdapter
+{
 	private ConnectionManager connectionManager;
 
-	public DefaultColumnMetadataAdapter(ConnectionManager connectionManager) {
+	public DefaultColumnMetadataAdapter(ConnectionManager connectionManager)
+	{
 		this.connectionManager = connectionManager;
 	}
 
-	public List<ColumnMetadata> getColumnMetadata(String tableName) {
+	public List<ColumnMetadata> getColumnMetadata(String tableName)
+	{
 		try (ResultSet rs = connectionManager.execute("SHOW FULL COLUMNS FROM " + tableName)) {
 			List<ColumnMetadata> columnMetadataList = new ArrayList<>();
 			while (rs.next()) {
@@ -49,6 +52,5 @@ public class DefaultColumnMetadataAdapter implements ColumnMetadataAdapter {
 		} catch (SQLException e) {
 			throw new JdbcException("Failed to read column metadata from default adapter", e);
 		}
-
 	}
 }

@@ -1,36 +1,41 @@
 package com.tuannguyen.liquibase.db.metadata.adapters;
 
-import com.tuannguyen.liquibase.db.ConnectionManager;
-import com.tuannguyen.liquibase.db.InitDatabase;
-import com.tuannguyen.liquibase.db.metadata.ColumnMetadata;
-import com.tuannguyen.liquibase.db.metadata.adapters.column.ColumnMetadataAdapter;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.tuannguyen.liquibase.db.ConnectionManager;
+import com.tuannguyen.liquibase.db.InitDatabase;
+import com.tuannguyen.liquibase.db.metadata.ColumnMetadata;
+import com.tuannguyen.liquibase.db.metadata.adapters.column.ColumnMetadataAdapter;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-public class ColumnMetadataAdapterTest {
+public class ColumnMetadataAdapterTest
+{
 	private ColumnMetadataAdapter adapter;
 
 	@BeforeClass
-	public static void setupClass() throws SQLException {
+	public static void setupClass() throws SQLException
+	{
 		InitDatabase.initDatabase();
 	}
 
 	@Before
-	public void setup() {
+	public void setup()
+	{
 		ConnectionManager connectionManager = InitDatabase.getConnectionManager();
 		adapter = connectionManager.getColumnMetadataAdapter();
 	}
 
 	@Test
-	public void getColumnMetadata_givenValidTable_shouldReturnCorrectMetadata() {
+	public void getColumnMetadata_givenValidTable_shouldReturnCorrectMetadata()
+	{
 		List<ColumnMetadata> actualMetadata = adapter.getColumnMetadata("complex_table");
 		List<ColumnMetadata> expectedMetadata = new ArrayList<>();
 		ColumnMetadata columnMetadata = ColumnMetadata

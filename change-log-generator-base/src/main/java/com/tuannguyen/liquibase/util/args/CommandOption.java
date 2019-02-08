@@ -8,22 +8,29 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class CommandOption {
+public class CommandOption
+{
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	private Command parent;
 
 	private String alias;
+
 	private String shortcut;
+
 	private String helpText;
+
 	private CommandOptionType type;
+
 	private boolean optional = true;
 
-	CommandOption(Command parent) {
+	CommandOption(Command parent)
+	{
 		this.parent = parent;
 	}
 
-	Object getValue(String value) {
+	Object getValue(String value)
+	{
 		switch (type) {
 			case STRING:
 				return value.trim();
@@ -39,8 +46,8 @@ public class CommandOption {
 		return null;
 	}
 
-
-	public Command build() {
+	public Command build()
+	{
 		return this.parent;
 	}
 }

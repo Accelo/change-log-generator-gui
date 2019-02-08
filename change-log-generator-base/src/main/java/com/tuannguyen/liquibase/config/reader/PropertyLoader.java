@@ -1,14 +1,5 @@
 package com.tuannguyen.liquibase.config.reader;
 
-
-import com.tuannguyen.liquibase.config.ConfigException;
-import com.tuannguyen.liquibase.config.annotations.ConfigWrapper;
-import com.tuannguyen.liquibase.config.annotations.PromptConfig;
-import com.tuannguyen.liquibase.config.model.AfterPropertiesSet;
-import com.tuannguyen.liquibase.util.ObjectUtils;
-import com.tuannguyen.liquibase.util.transform.Converter;
-import lombok.extern.log4j.Log4j;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,11 +8,22 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.Properties;
 
+import com.tuannguyen.liquibase.config.ConfigException;
+import com.tuannguyen.liquibase.config.annotations.ConfigWrapper;
+import com.tuannguyen.liquibase.config.annotations.PromptConfig;
+import com.tuannguyen.liquibase.config.model.AfterPropertiesSet;
+import com.tuannguyen.liquibase.util.ObjectUtils;
+import com.tuannguyen.liquibase.util.transform.Converter;
+
+import lombok.extern.log4j.Log4j;
+
 @Log4j
-public class PropertyLoader {
+public class PropertyLoader
+{
 	private Properties properties = new Properties();
 
-	public void load(String fileName) {
+	public void load(String fileName)
+	{
 		InputStream inputStream = null;
 		try {
 			if (fileName != null) {
@@ -38,7 +40,6 @@ public class PropertyLoader {
 
 			properties = new Properties();
 			properties.load(inputStream);
-
 		} catch (Exception e) {
 			throw new ConfigException("Failed to load config values from property file", e);
 		} finally {
@@ -50,10 +51,10 @@ public class PropertyLoader {
 				}
 			}
 		}
-
 	}
 
-	public <T> T getConfiguration(Class<T> configurationClass) {
+	public <T> T getConfiguration(Class<T> configurationClass)
+	{
 		try {
 			T configuration = configurationClass.newInstance();
 			for (Field field : configurationClass.getDeclaredFields()) {

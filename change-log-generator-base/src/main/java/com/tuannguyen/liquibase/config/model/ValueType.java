@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum ValueType {
+public enum ValueType
+{
 	STRING("defaultValue", "value"),
 	NUMERIC("defaultValueNumeric", "valueNumeric"),
 	DATE("defaultValueDate", "valueDate"),
@@ -13,5 +14,6 @@ public enum ValueType {
 	COMPUTED("defaultValueComputed", "valueComputed");
 
 	private String liquibaseDefaultValueName;
+
 	private String liquibaseValueName;
 }

@@ -1,14 +1,15 @@
 package com.tuannguyen.liquibase.gui.helper;
 
+import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
-import java.io.IOException;
-
-public class LoadablePane extends Pane {
-	public LoadablePane(String fxmlLocation) {
+public class LoadablePane extends Pane
+{
+	public LoadablePane(String fxmlLocation)
+	{
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader();
 			fxmlLoader.setController(this);
