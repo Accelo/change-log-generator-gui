@@ -47,7 +47,7 @@
 </#list>
 <#list filterType(changes, ['U'], false) as change>
 	<#lt>UPDATE ${change.table}
-	<#lt>SET ${change.name} = ${change.value!"NULL"}<#if !change.where?has_content>;</#if>
+	<#lt>SET ${change.name} = ${wrapValue(change, change.value)}<#if !change.where?has_content>;</#if>
 	<#lt><#if change.where?has_content>WHERE ${change.where};</#if>
 	${'\n'}
 </#list>

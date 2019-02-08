@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ValueType
 {
 	STRING("defaultValue", "value"),
+	RAW("defaultValue", "value"),
 	NUMERIC("defaultValueNumeric", "valueNumeric"),
 	DATE("defaultValueDate", "valueDate"),
 	BOOLEAN("defaultValueBoolean", "valueBoolean"),

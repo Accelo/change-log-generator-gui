@@ -164,7 +164,15 @@ public class ChangeWriterTest
 								.name("new_date")
 								.value("12")
 								.where("id = 7")
-								.valueType(ValueType.NUMERIC)
+								.valueType(ValueType.STRING)
+								.modificationType(ModificationType.U)
+								.build(),
+						ChangeConfiguration.builder()
+								.table("job_settings")
+								.name("new_date")
+								.value("NULL")
+								.where("id = 7")
+								.valueType(ValueType.RAW)
 								.modificationType(ModificationType.U)
 								.build(),
 						ChangeConfiguration.builder()
