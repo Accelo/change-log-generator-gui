@@ -4,12 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.converters.base.NodeConverter;
+import com.tuannguyen.liquibase.config.model.ValueType;
 import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper;
 import com.tuannguyen.liquibase.gui.model.ChangeInformation;
 
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
+import javafx.util.StringConverter;
 
 public class UpdatePane extends SubtypePane
 {
@@ -26,10 +31,7 @@ public class UpdatePane extends SubtypePane
 	private JFXTextFieldWrapper whereTF;
 
 	@FXML
-	private JFXCheckBox computedValue;
-
-	@FXML
-	private JFXCheckBox quotedValue;
+	private JFXComboBox<ValueType> valueTypeCb;
 
 	public UpdatePane()
 	{
@@ -47,18 +49,9 @@ public class UpdatePane extends SubtypePane
 	public void initialize()
 	{
 		super.initialize();
-		quotedValue.disableProperty()
-				.bind(Bindings.createBooleanBinding(
-						() -> computedValue.selectedProperty()
-								.getValue(),
-						computedValue.selectedProperty()
-				));
-		computedValue.disableProperty()
-				.bind(Bindings.createBooleanBinding(
-						() -> quotedValue.selectedProperty()
-								.getValue(),
-						quotedValue.selectedProperty()
-				));
+		Arrays.stream(ValueType.values()).forEach(valueType -> valueTypeCb.getItems().add(valueType));
+		valueTypeCb.setConverter(getDefaultValueTypeConverter());
+
 		tableNameTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> {
 					changeInformation.setTable(newValue);
@@ -69,11 +62,8 @@ public class UpdatePane extends SubtypePane
 				});
 		valueTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setValue(newValue));
-		quotedValue.selectedProperty()
-				.addListener((observable, oldValue, newValue) -> changeInformation.setQuoted(newValue));
-		computedValue.selectedProperty()
-				.addListener((observable, oldValue, newValue) -> changeInformation.setComputed(
-						newValue));
+		valueTypeCb.valueProperty()
+				.addListener((observable, oldValue, newValue) -> changeInformation.setValueType(newValue));
 		whereTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setWhere(newValue));
 		valueTF.textProperty()
@@ -93,12 +83,8 @@ public class UpdatePane extends SubtypePane
 		valueTF.textProperty()
 				.setValue(changeInformation.value()
 						.getValue());
-		quotedValue.selectedProperty()
-				.setValue(changeInformation.quoted()
-						.getValue());
-		computedValue.selectedProperty()
-				.setValue(changeInformation.computed()
-						.getValue());
+		valueTypeCb.valueProperty()
+				.setValue(changeInformation.getValueType());
 		whereTF.textProperty()
 				.setValue(changeInformation.where()
 						.getValue());

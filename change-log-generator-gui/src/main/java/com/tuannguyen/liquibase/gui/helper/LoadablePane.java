@@ -17,7 +17,7 @@ public class LoadablePane extends Pane
 			Node root = fxmlLoader.load();
 			getChildren().add(root);
 		} catch (IOException e) {
-			throw new RuntimeException("Pane " + fxmlLocation + " not found");
+			throw new RuntimeException("Failed to load " + fxmlLocation, e);
 		}
 	}
 }

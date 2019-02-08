@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.jfoenix.validation.base.ValidatorBase;
+import com.tuannguyen.liquibase.config.model.ValueType;
 import com.tuannguyen.liquibase.gui.helper.JFXPristine;
 import com.tuannguyen.liquibase.gui.helper.JFXTextAreaWrapper;
 import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper;
@@ -11,6 +12,7 @@ import com.tuannguyen.liquibase.gui.helper.LoadablePane;
 import com.tuannguyen.liquibase.gui.model.ChangeInformation;
 
 import javafx.scene.control.TextInputControl;
+import javafx.util.StringConverter;
 
 public abstract class SubtypePane extends LoadablePane
 {
@@ -62,7 +64,7 @@ public abstract class SubtypePane extends LoadablePane
 	private void setValidator(TextInputControl textInputControl)
 	{
 		ValidatorBase validator = new RequiredFieldValidator();
-		validator.setMessage("This field is not optional");
+		validator.setMessage("This field is required");
 		if (textInputControl instanceof JFXTextFieldWrapper) {
 			((JFXTextFieldWrapper) textInputControl).setValidators(validator);
 		} else if (textInputControl instanceof JFXTextAreaWrapper) {
@@ -106,5 +108,20 @@ public abstract class SubtypePane extends LoadablePane
 				((JFXPristine) field).setPristine(true);
 			}
 		});
+	}
+
+	protected StringConverter<ValueType> getDefaultValueTypeConverter() {
+		return new StringConverter<ValueType>()
+		{
+			@Override public String toString(ValueType object)
+			{
+				return object.name().toLowerCase();
+			}
+
+			@Override public ValueType fromString(String string)
+			{
+				return ValueType.valueOf(string.toUpperCase());
+			}
+		};
 	}
 }

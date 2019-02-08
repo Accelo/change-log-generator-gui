@@ -1,50 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXToggleButton?>
-<?import com.tuannguyen.liquibase.gui.helper.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.layout.*?>
+<?import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
 <VBox prefHeight="400.0" prefWidth="510.0" xmlns="http://javafx.com/javafx/8.0.71" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0">
             <children>
-                <JFXTextFieldWrapper fx:id="tableNameTF" labelFloat="true" promptText="Table" HBox.hgrow="ALWAYS"/>
-                <JFXTextFieldWrapper fx:id="columnNameTF" labelFloat="true" promptText="Column name"
-                                     HBox.hgrow="ALWAYS">
+                <JFXTextFieldWrapper fx:id="tableNameTF" labelFloat="true" promptText="Table" HBox.hgrow="ALWAYS" />
+                <JFXTextFieldWrapper fx:id="columnNameTF" labelFloat="true" promptText="Column name" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets left="80.0"/>
+                        <Insets left="80.0" />
                     </HBox.margin>
                 </JFXTextFieldWrapper>
             </children>
         </HBox>
         <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0">
             <children>
-                <JFXTextFieldWrapper fx:id="typeTF" labelFloat="true" promptText="Type" HBox.hgrow="ALWAYS"/>
+                <JFXTextFieldWrapper fx:id="typeTF" labelFloat="true" promptText="Type" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets top="-10.0" />
+               </HBox.margin></JFXTextFieldWrapper>
                 <VBox alignment="CENTER_LEFT" maxWidth="215.0" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets left="80.0" top="2.0"/>
+                        <Insets left="80.0" top="2.0" />
                     </HBox.margin>
                     <children>
-                        <JFXTextFieldWrapper fx:id="defaultValueTF" labelFloat="true" promptText="Default value"
-                                             VBox.vgrow="ALWAYS">
+                        <JFXTextFieldWrapper fx:id="defaultValueTF" labelFloat="true" promptText="Default value" VBox.vgrow="ALWAYS">
                             <VBox.margin>
-                                <Insets top="25.0"/>
+                                <Insets top="37.0" />
                             </VBox.margin>
                         </JFXTextFieldWrapper>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
-                            <children>
-                                <JFXCheckBox fx:id="computedValue" text="computed"/>
-                                <JFXCheckBox fx:id="quotedValue" text="quoted">
-                                    <HBox.margin>
-                                        <Insets left="8.0"/>
-                                    </HBox.margin>
-                                </JFXCheckBox>
-                            </children>
-                            <VBox.margin>
-                                <Insets top="10.0"/>
-                            </VBox.margin>
-                        </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <JFXComboBox fx:id="valueTypeCb" labelFloat="true" promptText="Value Type" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="25.0" />
+                     </VBox.margin>
+                  </HBox>
                     </children>
                 </VBox>
             </children>
@@ -53,29 +51,26 @@
             <children>
                 <JFXToggleButton fx:id="uniqueToggle" prefHeight="36.0" prefWidth="122.0" selected="true" text="Unique">
                     <HBox.margin>
-                        <Insets right="173.0"/>
+                        <Insets right="173.0" />
                     </HBox.margin>
                 </JFXToggleButton>
-                <JFXTextFieldWrapper fx:id="constraintTF" labelFloat="true" promptText="Constraint Name"
-                                     HBox.hgrow="ALWAYS">
+                <JFXTextFieldWrapper fx:id="constraintTF" labelFloat="true" promptText="Constraint Name" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets/>
+                        <Insets />
                     </HBox.margin>
                 </JFXTextFieldWrapper>
             </children>
         </HBox>
         <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0">
             <children>
-                <JFXToggleButton fx:id="nullableToggle" prefHeight="36.0" prefWidth="122.0" selected="true"
-                                 text="Nullable">
+                <JFXToggleButton fx:id="nullableToggle" prefHeight="36.0" prefWidth="122.0" selected="true" text="Nullable">
                     <HBox.margin>
-                        <Insets right="173.0"/>
+                        <Insets right="173.0" />
                     </HBox.margin>
                 </JFXToggleButton>
-                <JFXTextFieldWrapper fx:id="afterColumn" labelFloat="true" promptText="After column"
-                                     HBox.hgrow="ALWAYS">
+                <JFXTextFieldWrapper fx:id="afterColumn" labelFloat="true" promptText="After column" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets/>
+                        <Insets />
                     </HBox.margin>
                 </JFXTextFieldWrapper>
             </children>

@@ -95,7 +95,7 @@ public class BasicController
 	private void setValidator(JFXTextFieldWrapper JFXTextFieldWrapper)
 	{
 		ValidatorBase validator = new RequiredFieldValidator();
-		validator.setMessage("This field is not optional");
+		validator.setMessage("This field is required");
 		JFXTextFieldWrapper.setValidators(validator);
 	}
 
@@ -132,7 +132,7 @@ public class BasicController
 	private void setProjectDirError(boolean error)
 	{
 		if (error) {
-			projectDirTF.setTooltip(new Tooltip("This field is not optional"));
+			projectDirTF.setTooltip(new Tooltip("This field is required"));
 			projectDirTF.getStyleClass()
 					.add("textField--error");
 		} else {

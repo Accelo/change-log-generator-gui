@@ -3,15 +3,21 @@ package com.tuannguyen.liquibase.gui.types;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.validation.Validator;
+
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXToggleButton;
 import com.tuannguyen.liquibase.config.model.BooleanWrapper;
+import com.tuannguyen.liquibase.config.model.ValueType;
 import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper;
 import com.tuannguyen.liquibase.gui.model.ChangeInformation;
 
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextInputControl;
+import javafx.util.Pair;
+import javafx.util.StringConverter;
 
 public class AddPane extends SubtypePane
 {
@@ -37,10 +43,7 @@ public class AddPane extends SubtypePane
 	private JFXToggleButton nullableToggle;
 
 	@FXML
-	private JFXCheckBox computedValue;
-
-	@FXML
-	private JFXCheckBox quotedValue;
+	private JFXComboBox<ValueType> valueTypeCb;
 
 	@FXML
 	private JFXTextFieldWrapper afterColumn;
@@ -60,18 +63,8 @@ public class AddPane extends SubtypePane
 	public void initialize()
 	{
 		super.initialize();
-		quotedValue.disableProperty()
-				.bind(Bindings.createBooleanBinding(
-						() -> computedValue.selectedProperty()
-								.getValue(),
-						computedValue.selectedProperty()
-				));
-		computedValue.disableProperty()
-				.bind(Bindings.createBooleanBinding(
-						() -> quotedValue.selectedProperty()
-								.getValue(),
-						quotedValue.selectedProperty()
-				));
+		Arrays.stream(ValueType.values()).forEach(valueType -> valueTypeCb.getItems().add(valueType));
+		valueTypeCb.setConverter(getDefaultValueTypeConverter());
 
 		constraintTF.visibleProperty()
 				.bind(Bindings.createBooleanBinding(
@@ -92,10 +85,8 @@ public class AddPane extends SubtypePane
 				.addListener((observable, oldValue, newValue) -> changeInformation.setDefaultValue(newValue));
 		typeTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setType(newValue));
-		quotedValue.selectedProperty()
-				.addListener((observable, oldValue, newValue) -> changeInformation.setQuoted(newValue));
-		computedValue.selectedProperty()
-				.addListener((observable, oldValue, newValue) -> changeInformation.setComputed(newValue));
+		valueTypeCb.valueProperty()
+				.addListener((observable, oldValue, newValue) -> changeInformation.setValueType(newValue));
 		constraintTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setConstraintName(newValue));
 		nullableToggle.selectedProperty()
@@ -133,12 +124,8 @@ public class AddPane extends SubtypePane
 		typeTF.textProperty()
 				.setValue(currentInformation.type()
 						.getValue());
-		quotedValue.selectedProperty()
-				.setValue(currentInformation.quoted()
-						.getValue());
-		computedValue.selectedProperty()
-				.setValue(currentInformation.computed()
-						.getValue());
+		valueTypeCb.valueProperty()
+				.setValue(currentInformation.getValueType());
 		constraintTF.textProperty()
 				.setValue(currentInformation.constraintName()
 						.getValue());
@@ -157,8 +144,7 @@ public class AddPane extends SubtypePane
 	{
 		super.reset();
 		defaultValueTF.setText("");
-		quotedValue.setSelected(false);
-		computedValue.setSelected(false);
+		valueTypeCb.setValue(ValueType.STRING);
 		nullableToggle.setSelected(true);
 		uniqueToggle.setSelected(false);
 	}

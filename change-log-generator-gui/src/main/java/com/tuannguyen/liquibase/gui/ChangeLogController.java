@@ -293,16 +293,10 @@ public class ChangeLogController
 								.getValue())
 						.uniqueConstraintName(changeInformation.getConstraintName())
 						.defaultValue(
-								changeInformation.isQuoted() ? getQuoted(
-										changeInformation.getDefaultValue()) :
-										changeInformation.getDefaultValue()
+								changeInformation.getDefaultValue()
 						)
+						.valueType(changeInformation.getValueType())
 						.where(changeInformation.getWhere())
-						.value(
-								changeInformation.isQuoted() ? getQuoted(
-										changeInformation.getValue()) :
-										changeInformation.getValue()
-						)
 						.newColumn(changeInformation.getNewColumn())
 						.sql(changeInformation.getSql())
 						.afterColumn(changeInformation.getAfterColumn())
@@ -352,11 +346,6 @@ public class ChangeLogController
 			e.printStackTrace();
 			AlertUtil.showError(e);
 		}
-	}
-
-	private String getQuoted(String value)
-	{
-		return String.format("'%s'", value);
 	}
 
 	private boolean validate()

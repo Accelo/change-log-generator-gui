@@ -2,6 +2,7 @@ package com.tuannguyen.liquibase.gui.model;
 
 import com.tuannguyen.liquibase.config.model.BooleanWrapper;
 import com.tuannguyen.liquibase.config.model.ModificationType;
+import com.tuannguyen.liquibase.config.model.ValueType;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -20,13 +21,11 @@ public class ChangeInformation
 
 	private StringProperty type;
 
-	private BooleanProperty computed;
-
-	private BooleanProperty quoted;
-
 	private StringProperty defaultValue;
 
 	private ObjectProperty<BooleanWrapper> nullable;
+
+	private ObjectProperty<ValueType> valueType;
 
 	private StringProperty constraintName;
 
@@ -135,43 +134,6 @@ public class ChangeInformation
 		return type;
 	}
 
-	public boolean isComputed()
-	{
-		return computed().get();
-	}
-
-	public void setComputed(boolean computed)
-	{
-		this.computed()
-				.set(computed);
-	}
-
-	public BooleanProperty computed()
-	{
-		if (computed == null) {
-			computed = new SimpleBooleanProperty();
-		}
-		return computed;
-	}
-
-	public boolean isQuoted()
-	{
-		return quoted().get();
-	}
-
-	public void setQuoted(boolean quoted)
-	{
-		this.quoted()
-				.set(quoted);
-	}
-
-	public BooleanProperty quoted()
-	{
-		if (quoted == null) {
-			quoted = new SimpleBooleanProperty();
-		}
-		return quoted;
-	}
 
 	public String getDefaultValue()
 	{
@@ -323,5 +285,23 @@ public class ChangeInformation
 			unique = new SimpleObjectProperty<>(BooleanWrapper.NULL);
 		}
 		return unique;
+	}
+
+	public ObjectProperty<ValueType> valueType()
+	{
+		if (valueType == null) {
+			valueType = new SimpleObjectProperty<>(ValueType.STRING);
+		}
+		return valueType;
+	}
+
+	public void setValueType(ValueType valueType)
+	{
+		this.valueType().set(valueType);
+	}
+
+	public ValueType getValueType()
+	{
+		return this.valueType().get();
 	}
 }

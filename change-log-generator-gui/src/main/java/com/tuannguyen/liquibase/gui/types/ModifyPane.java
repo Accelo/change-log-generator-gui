@@ -3,9 +3,10 @@ package com.tuannguyen.liquibase.gui.types;
 import java.util.Arrays;
 import java.util.List;
 
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.validation.base.ValidatorBase;
 import com.tuannguyen.liquibase.config.model.BooleanWrapper;
+import com.tuannguyen.liquibase.config.model.ValueType;
 import com.tuannguyen.liquibase.gui.helper.DefaultCallbackListCell;
 import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper;
 import com.tuannguyen.liquibase.gui.model.ChangeInformation;
@@ -14,6 +15,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextInputControl;
+import javafx.util.StringConverter;
 
 public class ModifyPane extends SubtypePane
 {
@@ -33,10 +35,7 @@ public class ModifyPane extends SubtypePane
 	private JFXTextFieldWrapper defaultValueTF;
 
 	@FXML
-	private JFXCheckBox computedValue;
-
-	@FXML
-	private JFXCheckBox quotedValue;
+	private JFXComboBox<ValueType> valueTypeCb;
 
 	@FXML
 	private JFXComboBox<BooleanWrapper> uniqueCb;
@@ -52,27 +51,33 @@ public class ModifyPane extends SubtypePane
 	@Override
 	public List<TextInputControl> textInputControlList()
 	{
-		return Arrays.asList(typeTF, columnNameTF, constraintTF, tableNameTF, columnNameTF);
+		return Arrays.asList(columnNameTF, constraintTF, tableNameTF, columnNameTF);
 	}
 
 	@FXML
 	public void initialize()
 	{
 		super.initialize();
-		quotedValue.disableProperty()
-				.bind(Bindings.createBooleanBinding(
-						() -> computedValue.selectedProperty()
-								.getValue(),
-						computedValue.selectedProperty()
-				));
-		computedValue.disableProperty()
-				.bind(Bindings.createBooleanBinding(
-						() -> quotedValue.selectedProperty()
-								.getValue(),
-						quotedValue.selectedProperty()
-				));
+		Arrays.stream(ValueType.values()).forEach(valueType -> valueTypeCb.getItems().add(valueType));
+		valueTypeCb.setConverter(getDefaultValueTypeConverter());
+		typeTF.setValidators(new ValidatorBase()
+		{
+			@Override protected void eval()
+			{
+				if (nullableCb.getValue() != BooleanWrapper.NULL && "".equals(typeTF.getText().trim())) {
+					this.hasErrors.set(true);
+					this.setMessage("This field is required");
+				} else {
+					this.hasErrors.set(false);
+				}
+			}
+		});
+
 		initialiseTriState(uniqueCb);
 		initialiseTriState(nullableCb);
+
+		valueTypeCb.valueProperty()
+				.addListener((observable, oldValue, newValue) -> changeInformation.setValueType(newValue));
 	}
 
 	private void initialiseTriState(JFXComboBox<BooleanWrapper> comboBox)
@@ -111,10 +116,6 @@ public class ModifyPane extends SubtypePane
 				.addListener((observable, oldValue, newValue) -> changeInformation.setDefaultValue(newValue));
 		typeTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setType(newValue));
-		quotedValue.selectedProperty()
-				.addListener((observable, oldValue, newValue) -> changeInformation.setQuoted(newValue));
-		computedValue.selectedProperty()
-				.addListener((observable, oldValue, newValue) -> changeInformation.setComputed(newValue));
 		constraintTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setConstraintName(newValue));
 		nullableCb.valueProperty()
@@ -139,12 +140,8 @@ public class ModifyPane extends SubtypePane
 		typeTF.textProperty()
 				.setValue(changeInformation.type()
 						.getValue());
-		quotedValue.selectedProperty()
-				.setValue(changeInformation.quoted()
-						.getValue());
-		computedValue.selectedProperty()
-				.setValue(changeInformation.computed()
-						.getValue());
+		valueTypeCb.valueProperty()
+				.setValue(changeInformation.getValueType());
 		constraintTF.textProperty()
 				.setValue(changeInformation.constraintName()
 						.getValue());
@@ -156,10 +153,19 @@ public class ModifyPane extends SubtypePane
 	public void reset()
 	{
 		super.reset();
-		quotedValue.setSelected(false);
-		computedValue.setSelected(false);
+		valueTypeCb.setValue(ValueType.STRING);
 		defaultValueTF.setText("");
 		nullableCb.setValue(BooleanWrapper.NULL);
 		uniqueCb.setValue(BooleanWrapper.NULL);
+	}
+
+	public boolean validate()
+	{
+		boolean isValid = super.validate();
+		if (!isValid) {
+			return isValid;
+		}
+
+		return typeTF.validate();
 	}
 }
