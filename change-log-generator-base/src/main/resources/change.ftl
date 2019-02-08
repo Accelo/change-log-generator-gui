@@ -26,6 +26,7 @@
 	<changeSet author="${config.authorName}" id="${generator.getId()}">
 		<renameColumn
 			newColumnName="${change.newColumn}"
+			columnDataType="${change.type}"
 			oldColumnName="${change.name}"
 			schemaName="${config.schema}"
 			tableName="${change.table}"/>

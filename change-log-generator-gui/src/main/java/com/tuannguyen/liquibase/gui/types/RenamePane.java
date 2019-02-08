@@ -20,6 +20,9 @@ public class RenamePane extends SubtypePane
 	@FXML
 	private JFXTextFieldWrapper newColumnTF;
 
+	@FXML
+	private JFXTextFieldWrapper typeTF;
+
 	public RenamePane()
 	{
 		super("/rename-pane.fxml");
@@ -28,7 +31,7 @@ public class RenamePane extends SubtypePane
 	@Override
 	public List<TextInputControl> textInputControlList()
 	{
-		return Arrays.asList(tableNameTF, columnNameTF, newColumnTF);
+		return Arrays.asList(typeTF, tableNameTF, columnNameTF, newColumnTF);
 	}
 
 	@Override
@@ -46,6 +49,8 @@ public class RenamePane extends SubtypePane
 				});
 		newColumnTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setNewColumn(newValue));
+		typeTF.textProperty()
+				.addListener((observable, oldValue, newValue) -> changeInformation.setType(newValue));
 	}
 
 	@Override
@@ -61,5 +66,7 @@ public class RenamePane extends SubtypePane
 		newColumnTF.textProperty()
 				.setValue(changeInformation.newColumn()
 						.getValue());
+		typeTF.textProperty()
+				.setValue(changeInformation.getType());
 	}
 }
