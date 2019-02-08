@@ -4,6 +4,7 @@ import com.tuannguyen.liquibase.config.annotations.ConditionalOn;
 import com.tuannguyen.liquibase.config.annotations.PromptConfig;
 import com.tuannguyen.liquibase.util.transform.BooleanToStringConverter;
 import com.tuannguyen.liquibase.util.transform.ModificationTypeToStringConverter;
+import com.tuannguyen.liquibase.util.transform.ValueTypeToStringConverter;
 import lombok.*;
 
 import java.util.function.Predicate;
@@ -14,8 +15,9 @@ import java.util.function.Predicate;
 @Getter
 @ToString
 public class ChangeConfiguration {
+	@Builder.Default
 	@PromptConfig(prompt = "type of modification", helpText = "(a)dd|(d)elete|(m)odify|(u)pdate|(r)ename|(s)ql|(dr)op table", converter = ModificationTypeToStringConverter.class)
-	private ModificationType modificationType;
+	private ModificationType modificationType = ModificationType.A;
 
 	@ConditionalOn(field = "modificationType", value = {"A", "M", "D", "U", "R", "DR"})
 	@PromptConfig(prompt = "table")
@@ -33,9 +35,10 @@ public class ChangeConfiguration {
 	@PromptConfig(prompt = "value")
 	private String value;
 
-	@ConditionalOn(field = "modificationType", value = {"A", "U"})
-	@PromptConfig(prompt = "value computed", helpText = "y|n", converter = BooleanToStringConverter.class)
-	private Boolean computed;
+	@Builder.Default
+	@ConditionalOn(field = "modificationType", value = {"A", "M", "U"})
+	@PromptConfig(prompt = "value type", helpText = "numeric|string|date|computed|boolean", converter = ValueTypeToStringConverter.class)
+	private ValueType valueType = ValueType.STRING;
 
 	@ConditionalOn(field = "modificationType", value = {"A", "M"})
 	@PromptConfig(prompt = "unique", helpText = "y|n|empty", converter = BooleanToStringConverter.class, nullIfEmpty = true)

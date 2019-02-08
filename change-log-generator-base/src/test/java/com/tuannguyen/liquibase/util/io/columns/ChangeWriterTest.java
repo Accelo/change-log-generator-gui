@@ -3,6 +3,7 @@ package com.tuannguyen.liquibase.util.io.columns;
 import com.tuannguyen.liquibase.config.model.ChangeConfiguration;
 import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
 import com.tuannguyen.liquibase.config.model.ModificationType;
+import com.tuannguyen.liquibase.config.model.ValueType;
 import com.tuannguyen.liquibase.db.IdGenerator;
 import com.tuannguyen.liquibase.util.container.BeanFactory;
 import com.tuannguyen.liquibase.util.io.TemplateHelper;
@@ -50,7 +51,7 @@ public class ChangeWriterTest {
 				                                                              .nullable(false)
 				                                                              .uniqueConstraintName("test")
 				                                                              .afterColumn("old")
-				                                                              .defaultValue("'a'")
+				                                                              .defaultValue("a")
 				                                                              .type("varchar(20)")
 				                                                              .unique(true)
 				                                                              .modificationType(ModificationType.A)
@@ -59,6 +60,7 @@ public class ChangeWriterTest {
 				                                                              .table("test2")
 				                                                              .name("new")
 				                                                              .nullable(false)
+				                                                              .valueType(ValueType.NUMERIC)
 				                                                              .defaultValue("6")
 				                                                              .type("INT(10)")
 				                                                              .modificationType(ModificationType.A)
@@ -68,10 +70,18 @@ public class ChangeWriterTest {
 				                                                              .name("new2")
 				                                                              .nullable(false)
 				                                                              .afterColumn("new1")
-				                                                              .defaultValue("'a'")
-				                                                              .type("enum('a', 'b')")
+				                                                              .defaultValue("TRUE")
+				                                                              .type("BOOLEAN")
 				                                                              .unique(true)
 				                                                              .uniqueConstraintName("")
+				                                                              .valueType(ValueType.BOOLEAN)
+				                                                              .modificationType(ModificationType.M)
+				                                                              .build(),
+				                                           ChangeConfiguration.builder()
+				                                                              .table("test")
+				                                                              .name("new2")
+				                                                              .defaultValue("1997/07/23")
+				                                                              .valueType(ValueType.DATE)
 				                                                              .modificationType(ModificationType.M)
 				                                                              .build(),
 				                                           ChangeConfiguration.builder()
@@ -83,14 +93,14 @@ public class ChangeWriterTest {
 				                                                              .table("update_table")
 				                                                              .name("update_column")
 				                                                              .modificationType(ModificationType.U)
-				                                                              .value("'a'")
+				                                                              .value("a")
 				                                                              .where("b IS NOT NULL")
 				                                                              .build(),
 				                                           ChangeConfiguration.builder()
 				                                                              .table("update_table")
 				                                                              .name("update_all_column")
 				                                                              .modificationType(ModificationType.U)
-				                                                              .value("'b'")
+				                                                              .value("b")
 				                                                              .build(),
 				                                           ChangeConfiguration.builder()
 				                                                              .table("unique_test")
@@ -113,7 +123,7 @@ public class ChangeWriterTest {
 				                                                              .table("job_settings")
 				                                                              .name("editing_level")
 				                                                              .type("enum('editable', 'not_editable')")
-				                                                              .defaultValue("'editable'")
+				                                                              .defaultValue("editable")
 				                                                              .modificationType(ModificationType.M)
 				                                                              .build(),
 				                                           ChangeConfiguration.builder()
@@ -121,7 +131,7 @@ public class ChangeWriterTest {
 				                                                              .name("test_date")
 				                                                              .type("DATE")
 				                                                              .defaultValue("NOW()")
-				                                                              .computed(true)
+				                                                              .valueType(ValueType.COMPUTED)
 				                                                              .modificationType(ModificationType.A)
 				                                                              .build(),
 				                                           ChangeConfiguration.builder()
@@ -129,7 +139,7 @@ public class ChangeWriterTest {
 				                                                              .name("updated_date")
 				                                                              .value("NOW()")
 				                                                              .where("id = 7")
-				                                                              .computed(true)
+				                                                              .valueType(ValueType.COMPUTED)
 				                                                              .modificationType(ModificationType.U)
 				                                                              .build(),
 				                                           ChangeConfiguration.builder()
@@ -142,7 +152,7 @@ public class ChangeWriterTest {
 				                                                              .table("expense")
 				                                                              .name("created")
 				                                                              .newColumn("new_updated_date")
-				                                                              .computed(true)
+				                                                              .valueType(ValueType.COMPUTED)
 				                                                              .value("IF(incurred IS NULL, NULL, CONCAT(incurred, '12:00:00'))")
 				                                                              .modificationType(ModificationType.U)
 				                                                              .build(),

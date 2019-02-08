@@ -7,7 +7,7 @@
 			<#lt>ALTER table ${table}
 		</#if>
 		<#if change.modificationType.name() == 'A'>
-			<#lt>ADD COLUMN ${change.name} ${change.type} <#if !change.nullable!true>NOT NULL </#if><#if change.defaultValue?has_content>DEFAULT ${change.defaultValue}</#if><#if change.afterColumn?has_content> AFTER ${change.afterColumn}</#if><#rt>
+			<#lt>ADD COLUMN ${change.name} ${change.type} <#if !change.nullable!true>NOT NULL </#if><#if change.defaultValue?has_content>DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.afterColumn?has_content> AFTER ${change.afterColumn}</#if><#rt>
 		</#if>
 		<#if change.modificationType.name() == 'R'>
 			<#lt>RENAME COLUMN ${change.name} TO ${change.newColumn}<#rt>
@@ -16,8 +16,10 @@
 			<#lt>DROP COLUMN ${change.name}<#rt>
 		</#if>
 		<#if change.modificationType.name() == 'M'>
-			<#if change.type?has_content || change.defaultValue?has_content || change.nullable?has_content>
-				<#lt>MODIFY COLUMN ${change.name}<#if change.type?has_content> ${change.type}</#if><#if change.defaultValue?has_content> DEFAULT ${change.defaultValue}</#if><#if change.nullable?has_content><#if !change.nullable> NOT</#if> NULL</#if><#rt>
+			<#if change.type?has_content>
+				<#lt>MODIFY COLUMN ${change.name} ${change.type}<#if change.defaultValue?has_content> DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.nullable?has_content><#if !change.nullable> NOT</#if> NULL</#if><#rt>
+			<#else>
+				<#lt>ALTER COLUMN ${change.name} SET DEFAULT <#if change.defaultValue?has_content>${wrapValue(change, change.defaultValue)}</#if><#rt>
 			</#if>
 		</#if>
 		<#lt><#if change?has_next>,<#else>;${'\n'}</#if>
@@ -74,5 +76,12 @@
 		<#return value>
 	<#else>
 		<#return fallback>
+	</#if>
+</#function>
+<#function wrapValue change value>
+	<#if ['STRING', 'DATE']?seq_contains(change.valueType.name())>
+		<#return "'${value}'">
+	<#else>
+		<#return value>
 	</#if>
 </#function>

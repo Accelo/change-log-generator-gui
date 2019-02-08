@@ -172,7 +172,7 @@ public class ChangeWriter {
 
 	private void putColumnsInView(GenerateChangeConfiguration generateChangeConfiguration, File viewDir) {
 		for (ChangeConfiguration changeConfiguration : generateChangeConfiguration.getChangeConfigurationList()) {
-			if (changeConfiguration.getModificationType() == ModificationType.A || changeConfiguration.getModificationType() == ModificationType.D) {
+			if (changeConfiguration.getModificationType() == ModificationType.A || changeConfiguration.getModificationType() == ModificationType.D || changeConfiguration.getModificationType() == ModificationType.R) {
 				String table    = changeConfiguration.getTable();
 				File   viewFile = new File(viewDir, table + ".xml");
 				if (!viewFile.exists()) {

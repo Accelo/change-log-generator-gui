@@ -277,7 +277,6 @@ public class ChangeLogController {
 										                       changeInformation.getDefaultValue()
 						                       )
 						                       .where(changeInformation.getWhere())
-						                       .computed(changeInformation.isComputed())
 						                       .value(
 								                       changeInformation.isQuoted() ? getQuoted(
 										                       changeInformation.getValue()) :

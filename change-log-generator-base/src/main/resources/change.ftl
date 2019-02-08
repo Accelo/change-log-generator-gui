@@ -42,7 +42,7 @@
 		<#if change.modificationType.name() == 'A'>
 	<changeSet author="${config.authorName}" id="${generator.getId()}">
 		<addColumn tableName="${change.table}" schemaName="${config.schema}">
-			<column name="${change.name}" type="${change.type}"<#if change.defaultValue?has_content> <#if change.computed!false>defaultValueComputed="${change.defaultValue}"<#else>defaultValue="${clean(change.defaultValue)}"</#if></#if><#if change.afterColumn?has_content> afterColumn="${change.afterColumn}"</#if><#if change.nullable!true && !change.unique!false>/</#if>>
+			<column name="${change.name}" type="${change.type}"<#if change.defaultValue?has_content> ${change.valueType.liquibaseDefaultValueName}="${clean(change.defaultValue)}"</#if><#if change.afterColumn?has_content> afterColumn="${change.afterColumn}"</#if><#if change.nullable!true && !change.unique!false>/</#if>>
 				<#if !change.nullable!true || change.unique!false>
 				<constraints<#if !change.nullable!true> nullable="false"</#if><#if change.unique!false> unique="true"</#if>/>
 			</column>
@@ -58,39 +58,21 @@
 			newDataType="${change.type}"
 			schemaName="${config.schema}"
 			tableName="${change.table}"/>
+		<#if change.nullable?has_content || change.defaultValue?has_content>
+		<modifySql dbms="mysql">
+			<append value=" <#if change.nullable?has_content><#if !change.nullable>NOT</#if> NULL </#if><#if change.defaultValue?has_content>DEFAULT ${wrapValue(change, clean(change.defaultValue))}</#if>"/>
+		</modifySql>
+		</#if>
 	</changeSet>
-			</#if>
-			<#if change.defaultValue?has_content>
-	<changeSet author="${config.authorName}" id="${generator.getId()}">
-		<addDefaultValue
-			columnName="${change.name}"
-			defaultValue="${clean(change.defaultValue)}"
-			schemaName="${config.schema}"
-			tableName="${change.table}"/>
-	</changeSet>
-			</#if>
-			<#if change.nullable?has_content>
-				<#if !change.nullable>
-	<changeSet author="${config.authorName}" id="${generator.getId()}">
-		<addNotNullConstraint
-					<#if change.type?has_content>
-			columnDataType="${change.type}"
-					</#if>
-		  	columnName="${change.name}"
-		  	schemaName="${config.schema}"
-		  	tableName="${change.table}"/>
-	</changeSet>
-				</#if>
-				<#if change.nullable>
-	<changeSet author="${config.authorName}" id="${generator.getId()}">
-		<dropNotNullConstraint
-					<#if change.type?has_content>
-			columnDataType="${change.type}"
-					</#if>
-			columnName="${change.name}"
-			schemaName="${config.schema}"
-			tableName="${change.table}"/>
-	</changeSet>
+			<#else>
+				<#if change.defaultValue?has_content>
+					<changeSet author="${config.authorName}" id="${generator.getId()}">
+						<addDefaultValue
+							columnName="${change.name}"
+							${change.valueType.liquibaseDefaultValueName}="${clean(change.defaultValue)}"
+							schemaName="${config.schema}"
+							tableName="${change.table}"/>
+					</changeSet>
 				</#if>
 			</#if>
 			<#if change.unique?has_content>
@@ -125,7 +107,7 @@
 		<update
 			schemaName="${config.schema}"
 			tableName="${change.table}">
-			<column name="${change.name}"<#if change.value?has_content> <#if change.computed!false>valueComputed="${change.value}"<#else>value="${clean(change.value)}"</#if></#if>/>
+			<column name="${change.name}"<#if change.value?has_content> ${change.valueType.liquibaseValueName}="${clean(change.value)}"</#if>/>
 			<#if change.where?has_content>
 			<where>${change.where}</where>
 			</#if>
@@ -150,5 +132,12 @@
 		<#return value>
 	<#else>
 		<#return fallback>
+	</#if>
+</#function>
+<#function wrapValue change value>
+	<#if ['STRING', 'DATE']?seq_contains(change.valueType.name())>
+		<#return "'${value}'">
+	<#else>
+		<#return value>
 	</#if>
 </#function>

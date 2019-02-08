@@ -42,6 +42,8 @@ class ViewHandler {
 		try {
 			if (changeConfiguration.getModificationType() == ModificationType.A) {
 				handleAddition();
+			} else if (changeConfiguration.getModificationType() == ModificationType.R) {
+				handleRename();
 			} else {
 				handleDeletion();
 			}
@@ -58,9 +60,7 @@ class ViewHandler {
 		Map<String, Object> parseData = getParseData();
 		TableMetadata tableMetadata = (TableMetadata) parseData.get(METADATA_KEY);
 		final List<ColumnMetadata> columnMetadataList = tableMetadata.getColumnMetadata();
-		OptionalInt optionalIndex = IntStream.range(0, columnMetadataList.size())
-				.filter(index -> columnMetadataList.get(index).getName().equals(changeConfiguration.getName()))
-				.findFirst();
+		OptionalInt optionalIndex = getIndex(columnMetadataList, changeConfiguration.getName());
 		if (optionalIndex.isPresent()) {
 			int index = optionalIndex.getAsInt();
 			columnMetadataList.remove(index);
@@ -72,9 +72,7 @@ class ViewHandler {
 		Map<String, Object> parseData = getParseData();
 		TableMetadata tableMetadata = (TableMetadata) parseData.get(METADATA_KEY);
 		final List<ColumnMetadata> columnMetadataList = tableMetadata.getColumnMetadata();
-		OptionalInt optionalIndex = IntStream.range(0, columnMetadataList.size() - 1)
-				.filter(index -> columnMetadataList.get(index).getName().equals(changeConfiguration.getAfterColumn()))
-				.findFirst();
+		OptionalInt optionalIndex = getIndex(columnMetadataList, changeConfiguration.getAfterColumn());
 		ColumnMetadata columnMetadata = ColumnMetadata.builder().name(changeConfiguration.getName()).build();
 		if (optionalIndex.isPresent()) {
 			int index = optionalIndex.getAsInt();
@@ -83,6 +81,24 @@ class ViewHandler {
 			columnMetadataList.add(columnMetadata);
 		}
 		writeToFile(parseData);
+	}
+
+	private void handleRename() throws ParserConfigurationException, IOException, SAXException {
+		Map<String, Object> parseData = getParseData();
+		TableMetadata tableMetadata = (TableMetadata) parseData.get(METADATA_KEY);
+		final List<ColumnMetadata> columnMetadataList = tableMetadata.getColumnMetadata();
+		OptionalInt optionalIndex = getIndex(columnMetadataList, changeConfiguration.getName());
+		if (optionalIndex.isPresent()) {
+			ColumnMetadata columnMetadata = columnMetadataList.get(optionalIndex.getAsInt());
+			columnMetadata.setName(changeConfiguration.getNewColumn());
+		}
+		writeToFile(parseData);
+	}
+
+	private OptionalInt getIndex(List<ColumnMetadata> columnMetadataList, String name) {
+		return IntStream.range(0, columnMetadataList.size())
+		         .filter(index -> columnMetadataList.get(index).getName().equals(name))
+		         .findFirst();
 	}
 
 	private Map<String, Object> getParseData() throws ParserConfigurationException, IOException, SAXException {
