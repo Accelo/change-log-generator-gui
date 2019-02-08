@@ -25,11 +25,11 @@ public class ChangeConfiguration
 	@PromptConfig(prompt = "type of modification", helpText = "(a)dd|(d)elete|(m)odify|(u)pdate|(r)ename|(s)ql|(dr)op table", converter = ModificationTypeToStringConverter.class)
 	private ModificationType modificationType = ModificationType.A;
 
-	@ConditionalOn(field = "modificationType", value = { "A", "M", "D", "U", "R", "DR" })
+	@ConditionalOn(field = "modificationType", value = { "A", "M", "D", "U", "R", "DR", "U" })
 	@PromptConfig(prompt = "table")
 	private String table;
 
-	@ConditionalOn(field = "modificationType", value = { "A", "M", "D", "U", "R" })
+	@ConditionalOn(field = "modificationType", value = { "A", "M", "D", "U", "R", "I" })
 	@PromptConfig(prompt = "name")
 	private String name;
 
@@ -37,7 +37,7 @@ public class ChangeConfiguration
 	@PromptConfig(prompt = "defaultValue")
 	private String defaultValue;
 
-	@ConditionalOn(field = "modificationType", value = { "U" })
+	@ConditionalOn(field = "modificationType", value = { "U", "I"})
 	@PromptConfig(prompt = "value")
 	private String value;
 
@@ -46,7 +46,7 @@ public class ChangeConfiguration
 	@PromptConfig(prompt = "value type", helpText = "numeric|string|date|computed|boolean", converter = ValueTypeToStringConverter.class)
 	private ValueType valueType = ValueType.STRING;
 
-	@ConditionalOn(field = "modificationType", value = { "A", "M" })
+	@ConditionalOn(field = "modificationType", value = { "A", "M", "R" })
 	@PromptConfig(prompt = "unique", helpText = "y|n|empty", converter = BooleanToStringConverter.class, nullIfEmpty = true)
 	private Boolean unique;
 

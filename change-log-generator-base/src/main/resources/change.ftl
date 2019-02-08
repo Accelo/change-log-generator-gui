@@ -125,8 +125,39 @@
 		<sql>${change.sql}</sql>
 	</changeSet>
 		</#if>
+		<#if change.modificationType.name() == 'I'>
+			<changeSet author="${config.authorName}" id="${generator.getId()}">
+				<createIndex indexName="${change.name}" schemaName="${config.schema}" tableName="${change.table}">
+					<column name="accelo_deployment"/>
+					<#list getIndexColumns(change.value) as column>
+						<column name="${column.name}" <#if column.descend!false>descend="true"</#if>/>
+					</#list>
+				</createIndex>
+			</changeSet>
+		</#if>
 	</#list>
 </databaseChangeLog>
+<#function getIndexColumns value>
+	<#local indexColumns = []>
+	<#local indexParts = value?split(',')>
+	<#list indexParts as part>
+		<#local descend=false>
+		<#local name=part?trim>
+		<#if part?upper_case?ends_with('ASC')>
+			<#local name=part?replace('asc$', '', 'ri')>
+		</#if>
+		<#if part?upper_case?ends_with('DESC')>
+			<#local name=part?replace('desc$', '', 'ri')>
+			<#local descend=true>
+		</#if>
+		<#local indexColumn={
+			"descend": descend,
+			"name": name?trim
+		}>
+		<#local indexColumns = indexColumns + [ indexColumn ] />
+	</#list>
+	<#return indexColumns>
+</#function>
 <#function clean str>
 	<#if str?matches("^[\'\"].*[\'\"]$")>
 		<#return str?substring(1, str?length - 1)>

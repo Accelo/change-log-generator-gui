@@ -193,6 +193,19 @@ public class ChangeWriterTest
 						ChangeConfiguration.builder()
 								.sql("UPDATE test SET value = 7")
 								.modificationType(ModificationType.S)
+								.build(),
+						ChangeConfiguration.builder()
+								.table("index_table")
+								.name("test_index")
+								.value("a DESC, b ASC, c desc, d asc")
+								.modificationType(ModificationType.I)
+								.build(),
+						ChangeConfiguration.builder()
+								.table("index_table")
+								.name("test_index")
+								.value("a DESC, b ASC, c desc, d asc")
+								.unique(true)
+								.modificationType(ModificationType.I)
 								.build()
 				))
 				.build();

@@ -2,7 +2,7 @@ package com.tuannguyen.liquibase.config.model;
 
 public enum ModificationType
 {
-	A("add"), D("delete"), U("update"), M("modify"), S("sql"), R("rename"), DR("drop");
+	A("add"), D("delete"), U("update"), M("modify"), S("sql"), R("rename"), DR("drop"), I("index");
 
 	private String name;
 
