@@ -43,10 +43,4 @@ public class DropPane extends SubtypePane
 				.setValue(currentInformation.table()
 						.getValue());
 	}
-
-	@Override
-	public void reset()
-	{
-		super.reset();
-	}
 }

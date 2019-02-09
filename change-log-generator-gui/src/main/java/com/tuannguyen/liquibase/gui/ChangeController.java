@@ -11,6 +11,7 @@ import com.tuannguyen.liquibase.gui.model.ChangeInformation;
 import com.tuannguyen.liquibase.gui.types.AddPane;
 import com.tuannguyen.liquibase.gui.types.DeletePane;
 import com.tuannguyen.liquibase.gui.types.DropPane;
+import com.tuannguyen.liquibase.gui.types.IndexPane;
 import com.tuannguyen.liquibase.gui.types.ModifyPane;
 import com.tuannguyen.liquibase.gui.types.RenamePane;
 import com.tuannguyen.liquibase.gui.types.SQLPane;
@@ -66,6 +67,7 @@ public class ChangeController
 		subTypePaneMap.put(ModificationType.S, new SQLPane());
 		subTypePaneMap.put(ModificationType.U, new UpdatePane());
 		subTypePaneMap.put(ModificationType.DR, new DropPane());
+		subTypePaneMap.put(ModificationType.I, new IndexPane());
 
 		modificationTypeTF.setItems(FXCollections.observableArrayList(ModificationType.values()));
 		changeInformationList = FXCollections.observableArrayList();
@@ -111,10 +113,10 @@ public class ChangeController
 							} else {
 								String table = item.getTable()
 										.trim();
-								String column = item.getColumn()
+								String name = item.getName()
 										.trim();
-								if (!table.isEmpty() || !column.isEmpty()) {
-									setText(String.format("%s-%s", table, column));
+								if (!table.isEmpty() || !name.isEmpty()) {
+									setText(String.format("%s-%s", table, name));
 								} else {
 									setText("Untitled");
 								}
@@ -191,7 +193,7 @@ public class ChangeController
 				.addListener((observable, oldValue, newValue) -> {
 					changeList.refresh();
 				});
-		currentInformation.column()
+		currentInformation.name()
 				.addListener((observable, oldValue, newValue) -> {
 					changeList.refresh();
 				});

@@ -73,7 +73,7 @@
                         <Insets right="173.0"/>
                     </HBox.margin>
                 </JFXToggleButton>
-                <JFXTextFieldWrapper fx:id="afterColumn" labelFloat="true" promptText="After column"
+                <JFXTextFieldWrapper fx:id="afterColumn" labelFloat="true" promptText="After name"
                                      HBox.hgrow="ALWAYS">
                     <HBox.margin>
                         <Insets/>

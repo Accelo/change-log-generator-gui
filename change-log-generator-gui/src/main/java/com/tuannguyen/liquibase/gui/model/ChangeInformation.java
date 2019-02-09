@@ -15,7 +15,7 @@ public class ChangeInformation
 
 	private StringProperty table;
 
-	private StringProperty column;
+	private StringProperty name;
 
 	private StringProperty type;
 
@@ -97,22 +97,22 @@ public class ChangeInformation
 		return table;
 	}
 
-	public String getColumn()
+	public String getName()
 	{
-		return column().get();
+		return name().get();
 	}
 
-	public void setColumn(String column)
+	public void setName(String name)
 	{
-		column().set(column);
+		name().set(name);
 	}
 
-	public StringProperty column()
+	public StringProperty name()
 	{
-		if (column == null) {
-			column = new SimpleStringProperty("");
+		if (name == null) {
+			name = new SimpleStringProperty("");
 		}
-		return column;
+		return name;
 	}
 
 	public String getType()

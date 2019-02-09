@@ -110,7 +110,8 @@ public abstract class SubtypePane extends LoadablePane
 		});
 	}
 
-	protected StringConverter<ValueType> getDefaultValueTypeConverter() {
+	protected StringConverter<ValueType> getDefaultValueTypeConverter()
+	{
 		return new StringConverter<ValueType>()
 		{
 			@Override public String toString(ValueType object)

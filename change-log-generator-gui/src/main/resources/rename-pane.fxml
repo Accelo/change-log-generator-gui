@@ -20,7 +20,7 @@
         <HBox prefHeight="100.0" prefWidth="200.0">
             <children>
                 <JFXTextFieldWrapper fx:id="newColumnTF" labelFloat="true" maxWidth="215.0" prefHeight="27.0"
-                                     prefWidth="536.0" promptText="New column"/>
+                                     prefWidth="536.0" promptText="New name"/>
                 <JFXTextFieldWrapper fx:id="typeTF" labelFloat="true" maxWidth="1.7976931348623157E308"
                                      minWidth="-Infinity"
                                      prefHeight="27.0" prefWidth="217.0" promptText="Type">

@@ -45,7 +45,7 @@ public class RenamePane extends SubtypePane
 				});
 		columnNameTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> {
-					changeInformation.setColumn(newValue);
+					changeInformation.setName(newValue);
 				});
 		newColumnTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setNewColumn(newValue));
@@ -61,7 +61,7 @@ public class RenamePane extends SubtypePane
 				.setValue(changeInformation.table()
 						.getValue());
 		columnNameTF.textProperty()
-				.setValue(changeInformation.column()
+				.setValue(changeInformation.name()
 						.getValue());
 		newColumnTF.textProperty()
 				.setValue(changeInformation.newColumn()

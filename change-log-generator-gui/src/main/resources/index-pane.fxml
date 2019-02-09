@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="400.0" prefWidth="510.0" xmlns="http://javafx.com/javafx/8.0.71" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0">
+            <children>
+                <JFXTextFieldWrapper fx:id="tableNameTF" labelFloat="true" promptText="Table" HBox.hgrow="ALWAYS" />
+                <JFXTextFieldWrapper fx:id="indexNameTF" labelFloat="true" promptText="Index Name" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets left="80.0" />
+                    </HBox.margin>
+                </JFXTextFieldWrapper>
+            </children>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0">
+            <children>
+                <JFXTextFieldWrapper fx:id="indexColumnsTF" labelFloat="true" maxWidth="215.0" prefHeight="27.0" prefWidth="536.0" promptText="Index Columns" />
+            <JFXToggleButton fx:id="uniqueToggle" prefWidth="156.0" text="Unique Index">
+               <HBox.margin>
+                  <Insets left="80.0" />
+               </HBox.margin>
+            </JFXToggleButton>
+            </children>
+            <VBox.margin>
+                <Insets top="30.0" />
+            </VBox.margin>
+        </HBox>
+    </children>
+</VBox>

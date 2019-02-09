@@ -119,7 +119,7 @@ public class ModifyPane extends SubtypePane
 				});
 		columnNameTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> {
-					changeInformation.setColumn(newValue);
+					changeInformation.setName(newValue);
 				});
 		defaultValueTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setDefaultValue(newValue));
@@ -141,7 +141,7 @@ public class ModifyPane extends SubtypePane
 				.setValue(changeInformation.table()
 						.getValue());
 		columnNameTF.textProperty()
-				.setValue(changeInformation.column()
+				.setValue(changeInformation.name()
 						.getValue());
 		defaultValueTF.textProperty()
 				.setValue(changeInformation.defaultValue()

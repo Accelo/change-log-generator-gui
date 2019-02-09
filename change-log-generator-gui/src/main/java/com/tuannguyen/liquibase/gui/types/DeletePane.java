@@ -39,7 +39,7 @@ public class DeletePane extends SubtypePane
 				});
 		columnNameTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> {
-					changeInformation.setColumn(newValue);
+					changeInformation.setName(newValue);
 				});
 	}
 
@@ -51,7 +51,7 @@ public class DeletePane extends SubtypePane
 				.setValue(currentInformation.table()
 						.getValue());
 		columnNameTF.textProperty()
-				.setValue(currentInformation.column()
+				.setValue(currentInformation.name()
 						.getValue());
 	}
 }

@@ -3,18 +3,13 @@ package com.tuannguyen.liquibase.gui.types;
 import java.util.Arrays;
 import java.util.List;
 
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.converters.base.NodeConverter;
 import com.tuannguyen.liquibase.config.model.ValueType;
 import com.tuannguyen.liquibase.gui.helper.JFXTextFieldWrapper;
 import com.tuannguyen.liquibase.gui.model.ChangeInformation;
 
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
-import javafx.util.StringConverter;
 
 public class UpdatePane extends SubtypePane
 {
@@ -58,7 +53,7 @@ public class UpdatePane extends SubtypePane
 				});
 		columnNameTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> {
-					changeInformation.setColumn(newValue);
+					changeInformation.setName(newValue);
 				});
 		valueTF.textProperty()
 				.addListener((observable, oldValue, newValue) -> changeInformation.setValue(newValue));
@@ -78,7 +73,7 @@ public class UpdatePane extends SubtypePane
 				.setValue(changeInformation.table()
 						.getValue());
 		columnNameTF.textProperty()
-				.setValue(changeInformation.column()
+				.setValue(changeInformation.name()
 						.getValue());
 		valueTF.textProperty()
 				.setValue(changeInformation.value()
