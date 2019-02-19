@@ -45,7 +45,7 @@ public class XmlHelperTest
 
 	@Test
 	public void writeDocument_givenValidXML_shouldOutputCorrectly()
-			throws IOException, ParserConfigurationException
+			throws Exception
 	{
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -80,7 +80,7 @@ public class XmlHelperTest
 
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		xmlHelper.writeDocument(doc, outStream, 2);
-		assertThat(outStream.toString(), equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+		assertThat(outStream.toString(), equalTo("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 				"<company>\n" +
 				"  <Staff id=\"1\">\n" +
 				"    <firstname>tuan</firstname>\n" +

@@ -1,22 +1,31 @@
 package com.tuannguyen.liquibase.util.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public class XmlHelper
 {
@@ -28,13 +37,13 @@ public class XmlHelper
 	}
 
 	public void writeDocument(Document document, OutputStream outputStream, int indentSize)
-			throws IOException
+			throws Exception
 	{
 		outputStream.write(prettyXMLDocument(document, indentSize).getBytes());
 	}
 
 	public String prettyXMLString(String xml, int indentSize)
-			throws IOException, SAXException, ParserConfigurationException
+			throws Exception
 	{
 
 		DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -44,16 +53,29 @@ public class XmlHelper
 	}
 
 	public static String prettyXMLDocument(Document document, int indentSize)
-			throws IOException
+			throws IOException, XPathExpressionException, TransformerException
 	{
-		OutputFormat format = new OutputFormat(document);
-		format.setIndenting(true);
-		format.setIndent(indentSize);
-		format.setLineWidth(Integer.MAX_VALUE);
-		Writer outxml = new StringWriter();
-		XMLSerializer serializer = new XMLSerializer(outxml, format);
-		serializer.serialize(document);
+		XPathFactory xpathFactory = XPathFactory.newInstance();
+		XPathExpression xpathExp = xpathFactory.newXPath()
+				.compile(
+						"//text()[normalize-space(.) = '']");
+		NodeList emptyTextNodes = (NodeList)
+				xpathExp.evaluate(document, XPathConstants.NODESET);
+		for (int i = 0; i < emptyTextNodes.getLength(); i++) {
+			Node emptyTextNode = emptyTextNodes.item(i);
+			emptyTextNode.getParentNode()
+					.removeChild(emptyTextNode);
+		}
 
-		return outxml.toString();
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		StreamResult result = new StreamResult(byteArrayOutputStream);
+		// write the content into xml file
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indentSize));
+		transformer.transform(new DOMSource(document), result);
+
+		return byteArrayOutputStream.toString(StandardCharsets.UTF_8.name());
 	}
 }

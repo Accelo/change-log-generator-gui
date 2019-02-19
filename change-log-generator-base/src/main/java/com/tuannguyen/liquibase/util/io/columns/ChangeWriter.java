@@ -1,5 +1,6 @@
 package com.tuannguyen.liquibase.util.io.columns;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -164,8 +165,7 @@ public class ChangeWriter
 				});
 	}
 
-	private void removeRow(File file, String rowToRemove) throws IOException, SAXException,
-			ParserConfigurationException, TransformerException
+	private void removeRow(File file, String rowToRemove) throws Exception
 	{
 		Document document = xmlHelper.getDocument(file);
 		Element documentElement = document.getDocumentElement();
@@ -295,8 +295,11 @@ public class ChangeWriter
 			element.setAttribute("file", filename);
 			element.setAttribute("relativeToChangelogFile", "true");
 			rootElement.appendChild(element);
-			rootElement.insertBefore(doc.createTextNode("\t"), element);
-			xmlHelper.writeDocument(doc, outputStream, 2);
+			rootElement.insertBefore(doc.createTextNode("\n\t"), element);
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			xmlHelper.writeDocument(doc, byteArrayOutputStream, 2);
+			String processedString = byteArrayOutputStream.toString().replaceAll(" {2}", "\t");
+			outputStream.write(processedString.getBytes());
 		} catch (Exception e) {
 			throw new ResultException("Failed to write to update file", e);
 		}

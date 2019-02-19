@@ -126,9 +126,7 @@ public class TableWriter
 		return data;
 	}
 
-	private void appendToUpdate(File updateFile, String newFileName) throws IOException, SAXException,
-			ParserConfigurationException,
-			TransformerException
+	private void appendToUpdate(File updateFile, String newFileName) throws Exception
 	{
 		Document doc = xmlHelper.getDocument(updateFile);
 		Element rootElement = doc.getDocumentElement();
