@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet author="tuannguyen" id="10:00:10" runOnChange="true">
+    <createView schemaName="accelo" viewName="COMPLEX_TABLE" replaceIfExists="true">
+select
+  `test`.`COMPLEX_TABLE`.`A` AS `A`,
+  `test`.`COMPLEX_TABLE`.`B` AS `B`,
+  `test`.`COMPLEX_TABLE`.`C` AS `C`,
+  `test`.`COMPLEX_TABLE`.`D` AS `D`,
+  `test`.`COMPLEX_TABLE`.`E` AS `E`
+from `test`.`COMPLEX_TABLE`
+where (`test`.`COMPLEX_TABLE`.`accelo_deployment` = (SELECT id FROM test.accelo_deployment WHERE username = (SELECT SUBSTRING_INDEX(USER(),'@',1))))</createView>
+  </changeSet>
+</databaseChangeLog>

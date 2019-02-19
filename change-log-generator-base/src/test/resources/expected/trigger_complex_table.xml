@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet author="tuannguyen" id="10:00:10" runOnChange="true">
+		<sql>DROP TRIGGER IF EXISTS complex_table_before_insert;</sql>
+		<sql endDelimiter="\n;">CREATE TRIGGER complex_table_before_insert
+			BEFORE INSERT ON test.COMPLEX_TABLE
+			FOR EACH ROW
+				BEGIN
+					DECLARE vDep varchar(50);
+					IF NEW.accelo_deployment IS NULL OR NEW.accelo_deployment = '' THEN
+						SELECT accelo.getDeploymentId() INTO vDep;
+						SET NEW.accelo_deployment = vDep;
+					END IF;
+						IF NEW.id IS NULL OR NEW.id &lt; 1 THEN
+					SET NEW.id = accelo_shared.getNextId(NEW.accelo_deployment, 'COMPLEX_TABLE');
+				END IF;
+			END;
+			;
+		</sql>
+	</changeSet>
+</databaseChangeLog>

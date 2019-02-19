@@ -295,7 +295,6 @@ public class ChangeWriter
 			element.setAttribute("file", filename);
 			element.setAttribute("relativeToChangelogFile", "true");
 			rootElement.appendChild(element);
-			rootElement.insertBefore(doc.createTextNode("\n\t"), element);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			xmlHelper.writeDocument(doc, byteArrayOutputStream, 2);
 			String processedString = byteArrayOutputStream.toString().replaceAll(" {2}", "\t");

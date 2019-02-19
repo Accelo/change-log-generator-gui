@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="tuannguyen" id="10:00:20">
+        <createTable schemaName="test" tableName="COMPLEX_TABLE">
+            <column name="accelo_deployment" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="A" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="5" name="B" type="INTEGER(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="TRUE" name="C" type="BOOLEAN(1)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP()" name="D" type="TIMESTAMP(23)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="NOW()" name="E" type="TIMESTAMP(23)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="tuannguyen" id="10:00:30">
+        <addPrimaryKey columnNames="accelo_deployment, A" constraintName="PRIMARY" schemaName="test" tableName="COMPLEX_TABLE"/>
+    </changeSet>
+    <changeSet author="tuannguyen" id="10:00:40">
+        <createIndex indexName="IDX" schemaName="test" tableName="COMPLEX_TABLE">
+            <column name="accelo_deployment"/>
+            <column descending="true" name="B"/>
+            <column name="C"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="tuannguyen" id="10:00:50">
+        <createIndex indexName="UNIQ_B" schemaName="test" tableName="COMPLEX_TABLE" unique="true">
+            <column name="accelo_deployment"/>
+            <column name="B"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

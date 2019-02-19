@@ -3,7 +3,6 @@ package com.tuannguyen.liquibase.util.io.tables;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -12,14 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.tuannguyen.liquibase.config.model.GenerateTableConfiguration;
 import com.tuannguyen.liquibase.db.IdGenerator;
@@ -51,7 +46,7 @@ public class TableWriter
 		try {
 			log.info("Writing triggers changelog");
 			File triggerDir = generateTableConfiguration.getTriggersDir();
-			String triggerName = tableMetadata.getName() + "_before_insert";
+			String triggerName = (tableMetadata.getName() + "_before_insert").toLowerCase();
 			if (!(triggerDir != null && triggerDir.exists())) {
 				log.warn(triggerDir + " not found. Creating files in current directory");
 				triggerDir = templateHelper.prepareDir("triggers");
@@ -72,7 +67,7 @@ public class TableWriter
 		try {
 			log.info("Writing views changelog");
 			File viewDir = generateTableConfiguration.getViewsDir();
-			String viewName = tableMetadata.getName();
+			String viewName = tableMetadata.getName().toLowerCase();
 			if (!(viewDir != null && viewDir.exists())) {
 				log.warn(viewDir + " not found. Creating files in current directory");
 				viewDir = templateHelper.prepareDir("views");
@@ -93,14 +88,14 @@ public class TableWriter
 		try {
 			log.info("Writing table changelog");
 			File tableDir = generateTableConfiguration.getTableDir();
-			String tableName = tableMetadata.getName();
+			String tableName = tableMetadata.getName().toLowerCase();
 			if (!(tableDir != null && tableDir.exists())) {
 				log.warn(tableDir + " not found. Creating files in current directory");
 				tableDir = templateHelper.prepareDir("tables");
 			} else {
 				appendToUpdate(generateTableConfiguration.getTableFile(), "tables/" + tableName + ".xml");
 			}
-			File tableFile = new File(tableDir, tableMetadata.getName() + ".xml");
+			File tableFile = new File(tableDir, tableName + ".xml");
 			Map<String, Object> data = getBaseData(generateTableConfiguration, tableMetadata);
 			data.put("generator", idGenerator);
 			StringWriter stringWriter = new StringWriter();

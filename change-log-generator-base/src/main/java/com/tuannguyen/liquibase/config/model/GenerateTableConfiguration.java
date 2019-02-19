@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -37,6 +38,7 @@ public class GenerateTableConfiguration implements AfterPropertiesSet
 	@PromptConfig(config = "db.shared_schema", prompt = "Schema")
 	private String schema;
 
+	@Setter
 	@PromptConfig(config = "db.base_project_dir", prompt = "Base project directory")
 	private String baseProjectDir;
 
