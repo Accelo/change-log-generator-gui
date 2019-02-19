@@ -13,7 +13,7 @@ my $updater = HVE::Updater->new(
 
 		return if $details->{db_updated};
 
-		return [ mysql_script_runner($context, '${file}.sql') ];
+		return [ mysql_script_runner($context, 'test.sql') ];
 	},
 );
 

@@ -1,14 +1,23 @@
 package com.tuannguyen.liquibase.util.io.columns;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Calendar;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.tuannguyen.liquibase.config.model.ChangeConfiguration;
 import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
@@ -16,17 +25,21 @@ import com.tuannguyen.liquibase.config.model.ModificationType;
 import com.tuannguyen.liquibase.config.model.ValueType;
 import com.tuannguyen.liquibase.db.IdGenerator;
 import com.tuannguyen.liquibase.util.container.BeanFactory;
+import com.tuannguyen.liquibase.util.helper.FileManager;
 import com.tuannguyen.liquibase.util.io.TemplateHelper;
 import com.tuannguyen.liquibase.util.io.XmlHelper;
 
+import static junit.framework.TestCase.assertEquals;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ IdGenerator.class })
 public class ChangeWriterTest
 {
 	private static TemplateHelper templateHelper;
 
 	private static XmlHelper xmlHelper;
 
-	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
+	private FileManager fileManager;
 
 	private ChangeWriter changeWriter;
 
@@ -43,7 +56,12 @@ public class ChangeWriterTest
 	@Before
 	public void setup()
 	{
+		Calendar today = Calendar.getInstance();
+		today.set(2019, Calendar.FEBRUARY, 18, 10, 0,0);
+		PowerMockito.mockStatic(Calendar.class);
+		Mockito.when(Calendar.getInstance()).thenReturn(today);
 		changeWriter = new ChangeWriter(new IdGenerator("HH:mm:ss"), templateHelper, xmlHelper);
+		fileManager = new FileManager();
 		configuration = GenerateChangeConfiguration.builder()
 				.authorName("tuan")
 				.outputFileName("test")
@@ -213,20 +231,33 @@ public class ChangeWriterTest
 	}
 
 	@Test
-	public void writeColumn_givenValidConfiguration_shouldWriteFile()
+	public void writeColumn_givenValidConfiguration_shouldWriteFile() throws URISyntaxException
 	{
+		fileManager.addNewFile(configuration.getUpdatesFile());
 		changeWriter.writeMultitenantChange(configuration);
+
+		File expectedUpdateFiles = new File(getClass().getResource("/expected/updates.xml").toURI());
+		assertEquals(fileManager.getFileContent(expectedUpdateFiles).orElse(""), fileManager.getFileContent(configuration.getUpdatesFile()).orElse(""));
+
+		File expectedXmlFile = new File(getClass().getResource("/expected/multitenant_update.xml").toURI());
+		assertEquals(fileManager.getFileContent(expectedXmlFile).orElse(""), fileManager.getFileContent(configuration.getXmlChangeLogFile()).orElse(""));
+
 	}
 
 	@Test
-	public void writeColumnSQL_givenValidConfiguration_shouldWriteFile()
+	public void writeColumnSQL_givenValidConfiguration_shouldWriteFile() throws URISyntaxException
 	{
 		changeWriter.writeSingleTenantChange(configuration);
+
+		File expectedPerlFile = new File(getClass().getResource("/expected/update.pl").toURI());
+		assertEquals(fileManager.getFileContent(expectedPerlFile).orElse(""), fileManager.getFileContent(configuration.getPerlFile()).orElse(""));
+
+		File expectedSqlFile = new File(getClass().getResource("/expected/sql_update.sql").toURI());
+		assertEquals(fileManager.getFileContent(expectedSqlFile).orElse(""), fileManager.getFileContent(configuration.getSqlFile()).orElse(""));
 	}
 
-	@Test
-	public void writePerlUpdate_givenValidDestination_shouldWriteFile() throws IOException
-	{
-		changeWriter.writePerlUpdate(configuration, tempFolder.newFile());
+	@After
+	public void teardown() {
+		fileManager.clean();
 	}
 }

@@ -1,0 +1,40 @@
+# Perltidy config file. For details see:
+#   http://perltidy.sourceforge.net/perltidy.html
+# Options in this file are broken up to match the sections in the manual
+
+# Basic Options
+-i=4   # whitespace is 4 wide
+-t     # use tabs
+-dt=4  # default tab size
+-l=200 # 200 enforced width lines
+-nvmll # don't special case max line lengths when heavily indented
+-ole=unix # unix line endings
+
+# Code Indentation Control
+-ci=4  # extra indent on a long line
+-nola  # don't outdent labels
+-nolq  # don't outdent long quotes
+-nolc  # don't outdent long comments
+-nicb  # don't indent closing brace
+-et=4  # each n initial space characters to be replaced by one tab character
+
+# Whitespace Control
+-pt=2  # paren tightness - don't add extra spaces when using parentheses
+
+# Comment Control
+-iscl  # ignore side comment length
+
+# Line Break Control
+-ce    # cuddled else ( "} else {" on the same line )
+-sbl   # opening sub brace on a new line
+-nbl   # opening brace (for if/else/foreach etc) on the same line
+-sot   # stack opening tokens and related flags
+--want-break-before="% + - * / x != == >= <= =~ !~ < > | & = **= += *= &= <<= &&= -= /= |= >>= ||= //= .= %= ^= x="
+-bar   # opening bracers always on right
+
+# Controlling List Formatting
+
+# Retaining or Ignoring Existing Line Breaks
+
+# Blank Line Control
+

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="tuan" id="10:00:10">
+        <addColumn schemaName="accelo_shared" tableName="test">
+            <column afterColumn="old" defaultValue="a" name="new1" type="varchar(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tuan" id="10:00:20">
+        <addColumn schemaName="accelo_shared" tableName="test2">
+            <column defaultValueNumeric="6" name="new" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tuan" id="10:00:30">
+        <modifyDataType columnName="new2" newDataType="BOOLEAN" schemaName="accelo_shared" tableName="test"/>
+        <modifySql dbms="mysql">
+            <append value=" NOT NULL DEFAULT TRUE"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="tuan" id="10:00:40">
+        <addUniqueConstraint columnDataType="BOOLEAN" columnName="new2" constraintName="test" schemaName="accelo_shared" tableName="test"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:00:50">
+        <addDefaultValue columnName="new2" defaultValueDate="1997/07/23" schemaName="accelo_shared" tableName="test"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:01:00">
+        <dropColumn columnName="delete_column" schemaName="accelo_shared" tableName="bye"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:01:10">
+        <update schemaName="accelo_shared" tableName="update_table">
+            <column name="update_column" value="a"/>
+            <where>b IS NOT NULL</where>
+        </update>
+    </changeSet>
+    <changeSet author="tuan" id="10:01:20">
+        <update schemaName="accelo_shared" tableName="update_table">
+            <column name="update_all_column" value="b"/>
+        </update>
+    </changeSet>
+    <changeSet author="tuan" id="10:01:30">
+        <modifyDataType columnName="new_date" newDataType="TIMESTAMP" schemaName="accelo_shared" tableName="update_table"/>
+        <modifySql dbms="mysql">
+            <append value=" DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="tuan" id="10:01:40">
+        <addUniqueConstraint columnName="now_unique" constraintName="unique_constraint" schemaName="accelo_shared" tableName="unique_test"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:01:50">
+        <dropUniqueConstraint columnName="not_unique" constraintName="unique_test" schemaName="accelo_shared" tableName="unique_test"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:02:00">
+        <preConditions onFail="MARK_RAN">
+            <viewExists viewName="blah"/>
+        </preConditions>
+        <dropView schemaName="accelo" viewName="blah"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:02:10">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="blah"/>
+        </preConditions>
+        <dropTable schemaName="accelo_shared" tableName="blah"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:02:20">
+        <modifyDataType columnName="editing_level" newDataType="enum('editable', 'not_editable')" schemaName="accelo_shared" tableName="job_settings"/>
+        <modifySql dbms="mysql">
+            <append value=" DEFAULT 'editable'"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="tuan" id="10:02:30">
+        <addColumn schemaName="accelo_shared" tableName="job_settings">
+            <column defaultValueComputed="NOW()" name="test_date" type="DATE"/>
+        </addColumn>
+        <modifySql dbms="mysql">
+            <append value=" ON UPDATE CURRENT TIMESTAMP"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="tuan" id="10:02:40">
+        <update schemaName="accelo_shared" tableName="job_settings">
+            <column name="updated_date" valueComputed="NOW()"/>
+            <where>id = 7</where>
+        </update>
+    </changeSet>
+    <changeSet author="tuan" id="10:02:50">
+        <update schemaName="accelo_shared" tableName="job_settings">
+            <column name="new_date" value="12"/>
+            <where>id = 7</where>
+        </update>
+    </changeSet>
+    <changeSet author="tuan" id="10:03:00">
+        <update schemaName="accelo_shared" tableName="job_settings">
+            <column name="new_date" value="NULL"/>
+            <where>id = 7</where>
+        </update>
+    </changeSet>
+    <changeSet author="tuan" id="10:03:10">
+        <renameColumn columnDataType="DATE" newColumnName="new_updated_date" oldColumnName="updated_date" schemaName="accelo_shared" tableName="job_settings"/>
+    </changeSet>
+    <changeSet author="tuan" id="10:03:20">
+        <update schemaName="accelo_shared" tableName="expense">
+            <column name="created" valueComputed="IF(incurred IS NULL, NULL, CONCAT(incurred, '12:00:00'))"/>
+        </update>
+    </changeSet>
+    <changeSet author="tuan" id="10:03:30">
+        <sql>UPDATE test SET value = 7</sql>
+    </changeSet>
+    <changeSet author="tuan" id="10:03:40">
+        <createIndex indexName="test_index" schemaName="accelo_shared" tableName="index_table">
+            <column name="accelo_deployment"/>
+            <column descend="true" name="a"/>
+            <column name="b"/>
+            <column descend="true" name="c"/>
+            <column name="d"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="tuan" id="10:03:50">
+        <createIndex indexName="test_index" schemaName="accelo_shared" tableName="index_table">
+            <column name="accelo_deployment"/>
+            <column descend="true" name="a"/>
+            <column name="b"/>
+            <column descend="true" name="c"/>
+            <column name="d"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
