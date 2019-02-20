@@ -3,6 +3,7 @@ package com.tuannguyen.liquibase.config.model;
 import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class GenerateChangeConfiguration implements AfterPropertiesSet
 			perlFile = Paths.get(sqlDir.getAbsolutePath(), "update.pl")
 					.toFile();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String date = simpleDateFormat.format(new Date());
+			String date = simpleDateFormat.format(Calendar.getInstance().getTime());
 			File sqlFile = Paths.get(
 					xmlUpdatesDir.getAbsolutePath(),
 					String.format("%s-%s.xml", date, jiraNumber)

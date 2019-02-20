@@ -1,18 +1,17 @@
 package com.tuannguyen.liquibase.util.io.columns;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.SimpleTimeZone;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -32,7 +31,7 @@ import com.tuannguyen.liquibase.util.io.XmlHelper;
 import static junit.framework.TestCase.assertEquals;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ IdGenerator.class })
+@PrepareForTest({ IdGenerator.class, GenerateChangeConfiguration.class })
 public class ChangeWriterTest
 {
 	private static TemplateHelper templateHelper;
@@ -62,6 +61,7 @@ public class ChangeWriterTest
 		Mockito.when(Calendar.getInstance()).thenReturn(today);
 		changeWriter = new ChangeWriter(new IdGenerator("HH:mm:ss"), templateHelper, xmlHelper);
 		fileManager = new FileManager();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		configuration = GenerateChangeConfiguration.builder()
 				.authorName("tuan")
 				.outputFileName("test")

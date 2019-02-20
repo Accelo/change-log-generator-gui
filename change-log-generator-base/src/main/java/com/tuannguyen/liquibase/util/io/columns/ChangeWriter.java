@@ -10,20 +10,15 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.tuannguyen.liquibase.config.model.ChangeConfiguration;
 import com.tuannguyen.liquibase.config.model.GenerateChangeConfiguration;
@@ -44,15 +39,12 @@ public class ChangeWriter
 
 	private IdGenerator idGenerator;
 
-	private SimpleDateFormat simpleDateFormat;
-
 	private XmlHelper xmlHelper;
 
 	public ChangeWriter(IdGenerator idGenerator, TemplateHelper templateHelper, XmlHelper xmlHelper)
 	{
 		this.idGenerator = idGenerator;
 		this.templateHelper = templateHelper;
-		simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		this.xmlHelper = xmlHelper;
 	}
 
@@ -289,10 +281,8 @@ public class ChangeWriter
 		try {
 			doc = xmlHelper.getDocument(updateFile);
 			Element rootElement = doc.getDocumentElement();
-			String date = simpleDateFormat.format(new Date());
-			String filename = String.format("updates/%s-%s.xml", date, generateChangeConfiguration.getJiraNumber());
 			Element element = doc.createElement("include");
-			element.setAttribute("file", filename);
+			element.setAttribute("file", "updates/" + generateChangeConfiguration.getXmlChangeLogFile().getName());
 			element.setAttribute("relativeToChangelogFile", "true");
 			rootElement.appendChild(element);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
