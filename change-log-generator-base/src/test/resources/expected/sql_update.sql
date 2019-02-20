@@ -1,12 +1,12 @@
-ALTER table test2
+ALTER TABLE test2
 ADD COLUMN new INT(10) NOT NULL DEFAULT 6;
 
-ALTER table test
+ALTER TABLE test
 ADD COLUMN new1 varchar(20) NOT NULL DEFAULT 'a' AFTER old,
 MODIFY COLUMN new2 BOOLEAN DEFAULT TRUE NOT NULL,
 ALTER COLUMN new2 SET DEFAULT '1997/07/23';
 
-ALTER table test
+ALTER TABLE test
 ADD CONSTRAINT test UNIQUE (new1),
 ADD CONSTRAINT test_new2 UNIQUE (new2);
 
@@ -14,21 +14,21 @@ CREATE INDEX test_index ON index_table (a DESC, b ASC, c desc, d asc);
 
 CREATE UNIQUE INDEX test_index ON index_table (a DESC, b ASC, c desc, d asc);
 
-ALTER table job_settings
+ALTER TABLE job_settings
 MODIFY COLUMN editing_level enum('editable', 'not_editable') DEFAULT 'editable',
 ADD COLUMN test_date DATE DEFAULT NOW() ON UPDATE CURRENT TIMESTAMP,
 RENAME COLUMN updated_date TO new_updated_date;
 
-ALTER table unique_test
+ALTER TABLE unique_test
 ADD CONSTRAINT unique_constraint UNIQUE (now_unique),
 DROP CONSTRAINT unique_test_not_unique;
 
 DROP TABLE IF EXISTS blah;
 
-ALTER table update_table
+ALTER TABLE update_table
 MODIFY COLUMN new_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
-ALTER table bye
+ALTER TABLE bye
 DROP COLUMN delete_column;
 
 UPDATE test SET value = 7;

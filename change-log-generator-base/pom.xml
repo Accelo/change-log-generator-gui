@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>com.tuannguyen.liquibase</groupId>
-        <version>1.1.7-fix</version>
+        <version>1.1.8</version>
         <artifactId>changelog-generator-parent</artifactId>
     </parent>
     <artifactId>changelog-generator</artifactId>
