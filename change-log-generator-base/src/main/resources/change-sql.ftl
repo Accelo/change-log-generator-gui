@@ -7,7 +7,7 @@
 	</#list>
 	<#list filterType(changes, ['A', 'D', 'M', 'R'], false) as change>
 		<#if change?is_first>
-			<#lt>ALTER table ${table}
+			<#lt>ALTER TABLE ${table}
 		</#if>
 		<#if change.modificationType.name() == 'A'>
 			<#lt>ADD COLUMN ${change.name} ${change.type} <#if !change.nullable!true>NOT NULL </#if><#if change.defaultValue?has_content>DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.afterColumn?has_content> AFTER ${change.afterColumn}</#if><#if change.extra?has_content> ${change.extra}</#if><#rt>
@@ -30,7 +30,7 @@
 	<#list filterType(changes, ['A', 'M'], true) as change>
 		<#assign fall_back_constraint=table + "_" + change.name/>
 		<#if change?is_first>
-			<#lt>ALTER table ${table}
+			<#lt>ALTER TABLE ${table}
 		</#if>
 		<#if change.modificationType.name() == 'A'>
 			<#lt>ADD CONSTRAINT ${fallback(fall_back_constraint, change.uniqueConstraintName)} UNIQUE (${change.name})<#rt>
