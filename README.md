@@ -4,16 +4,37 @@
 
 
 A tool to generate Liquibase changelogs
+# GUI app
 
+## Manual Build
+**On Unix**
+```bash
+./mvnw clean install
+./mvnw -pl change-log-generator-gui jfx:native
+```
+**On Window**
+```bash
+./mvnw.cmd clean install
+./mvnw -pl change-log-generator-gui jfx:native
+```
+## Binaries
+https://www.dropbox.com/sh/ahrbnvcufvi1n26/AAAWI2pGbi4TCbnl7W2z_9Jxa?dl=0
+
+## Release a new version
+```
+./release.sh [version]
+```
+
+# CLI tool:
 ## Manual build
 
 **On Unix**
 ```bash
-./mvnw clean package
+./mvnw clean install
 ```
 **On Window**
 ```bash
-./mvnw.cmd clean package
+./mvnw.cmd clean install
 ```
 
 It will generate 2 jar files in the target folder: <br/>
@@ -99,4 +120,3 @@ Config values include:
 * author name: use in the change log
 * schema: multi tenant schema, default to (accelo_shared)
 * output file name: single tenant sql file name (without the extension)
-
