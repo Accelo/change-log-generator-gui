@@ -178,7 +178,7 @@ public class ChangeWriter
 				documentElement.removeChild(element);
 			}
 		}
-		xmlHelper.writeDocument(document, Files.newOutputStream(file.toPath()), 4);
+		xmlHelper.writeDocument(document, Files.newOutputStream(file.toPath()), 2);
 	}
 
 	private void putColumnsInView(GenerateChangeConfiguration generateChangeConfiguration, File viewDir)
