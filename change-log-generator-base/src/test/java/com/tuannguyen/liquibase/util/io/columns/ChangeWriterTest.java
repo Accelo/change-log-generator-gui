@@ -224,6 +224,14 @@ public class ChangeWriterTest
 								.value("a DESC, b ASC, c desc, d asc")
 								.unique(true)
 								.modificationType(ModificationType.I)
+								.build(),
+						ChangeConfiguration.builder()
+								.table("quote_pdf_setting")
+								.name("page_breaks")
+								.type("VARCHAR(120)")
+								.nullable(true)
+								.where("id = 7")
+								.modificationType(ModificationType.A)
 								.build()
 				))
 				.build();

@@ -10,6 +10,9 @@ ALTER TABLE test
 ADD CONSTRAINT test UNIQUE (new1),
 ADD CONSTRAINT test_new2 UNIQUE (new2);
 
+ALTER TABLE quote_pdf_setting
+ADD COLUMN page_breaks VARCHAR(120);
+
 CREATE INDEX test_index ON index_table (a DESC, b ASC, c desc, d asc);
 
 CREATE UNIQUE INDEX test_index ON index_table (a DESC, b ASC, c desc, d asc);

@@ -125,4 +125,9 @@
             <column name="d"/>
         </createIndex>
     </changeSet>
+    <changeSet author="tuan" id="10:04:00">
+        <addColumn schemaName="accelo_shared" tableName="quote_pdf_setting">
+            <column name="page_breaks" type="VARCHAR(120)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

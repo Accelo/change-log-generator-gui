@@ -10,7 +10,7 @@
 			<#lt>ALTER TABLE ${table}
 		</#if>
 		<#if change.modificationType.name() == 'A'>
-			<#lt>ADD COLUMN ${change.name} ${change.type} <#if !change.nullable!true>NOT NULL </#if><#if change.defaultValue?has_content>DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.afterColumn?has_content> AFTER ${change.afterColumn}</#if><#if change.extra?has_content> ${change.extra}</#if><#rt>
+			<#lt>ADD COLUMN ${change.name} ${change.type}<#if !change.nullable!true> NOT NULL</#if><#if change.defaultValue?has_content> DEFAULT ${wrapValue(change, change.defaultValue)}</#if><#if change.afterColumn?has_content> AFTER ${change.afterColumn}</#if><#if change.extra?has_content> ${change.extra}</#if><#rt>
 		</#if>
 		<#if change.modificationType.name() == 'R'>
 			<#lt>RENAME COLUMN ${change.name} TO ${change.newColumn}<#rt>
