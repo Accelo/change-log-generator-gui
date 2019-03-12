@@ -130,4 +130,9 @@
             <column name="page_breaks" type="VARCHAR(120)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="tuan" id="10:04:10">
+        <addColumn schemaName="accelo_shared" tableName="expense">
+            <column defaultValue="NULL" name="created" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

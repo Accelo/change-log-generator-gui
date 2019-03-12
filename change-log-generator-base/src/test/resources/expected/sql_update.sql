@@ -22,6 +22,9 @@ MODIFY COLUMN editing_level enum('editable', 'not_editable') DEFAULT 'editable',
 ADD COLUMN test_date DATE DEFAULT NOW() ON UPDATE CURRENT TIMESTAMP,
 RENAME COLUMN updated_date TO new_updated_date;
 
+ALTER TABLE expense
+ADD COLUMN created TIMESTAMP NULL DEFAULT NULL;
+
 ALTER TABLE unique_test
 ADD CONSTRAINT unique_constraint UNIQUE (now_unique),
 DROP CONSTRAINT unique_test_not_unique;
