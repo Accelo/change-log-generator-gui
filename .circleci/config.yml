@@ -27,7 +27,7 @@ jobs:
       - run:
           name: Save jar
           command: |
-            mv "./change-log-generator-base/target/changelog-generator-jar-with-dependencies.jar" ./artifacts
+            mv "./change-log-generator-base/target/changelog-generator-jar-with-dependencies.jar" ./build
           when: always
       - run:
           name: Save test results
@@ -41,7 +41,7 @@ jobs:
       - store_test_results:
           path: ./junit
       - store_artifacts:
-          path: ./artifacts
+          path: ./build
       - store_artifacts:
           path: ./junit
       - run:
@@ -63,7 +63,7 @@ jobs:
             mvn -pl change-log-generator-gui changelog:s3-release
           when: always
       - store_artifacts:
-          path: ./artifacts
+          path: ./build
       - store_artifacts:
           path: ./junit
 workflows:
