@@ -7,7 +7,7 @@
 		<#if change.modificationType.name() == 'DR'>
 			<changeSet author="${config.authorName}" id="${generator.getId()}">
 				<preConditions onFail="MARK_RAN">
-					<viewExists viewName="${change.table}"/>
+					<viewExists schemaName="accelo" viewName="${change.table}"/>
 				</preConditions>
 				<dropView
 					schemaName="accelo"
@@ -15,7 +15,7 @@
 			</changeSet>
 			<changeSet author="${config.authorName}" id="${generator.getId()}">
 				<preConditions onFail="MARK_RAN">
-					<tableExists tableName="${change.table}"/>
+					<tableExists schemaName="accelo_shared" tableName="${change.table}"/>
 				</preConditions>
 				<dropTable
 					schemaName="accelo_shared"

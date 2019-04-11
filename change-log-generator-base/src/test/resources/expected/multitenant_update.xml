@@ -54,13 +54,13 @@
     </changeSet>
     <changeSet author="tuan" id="10:02:00">
         <preConditions onFail="MARK_RAN">
-            <viewExists viewName="blah"/>
+            <viewExists schemaName="accelo" viewName="blah"/>
         </preConditions>
         <dropView schemaName="accelo" viewName="blah"/>
     </changeSet>
     <changeSet author="tuan" id="10:02:10">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="blah"/>
+            <tableExists schemaName="accelo_shared" tableName="blah"/>
         </preConditions>
         <dropTable schemaName="accelo_shared" tableName="blah"/>
     </changeSet>
