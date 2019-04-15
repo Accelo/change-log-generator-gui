@@ -116,7 +116,7 @@ sudo ./changelog-generator.sh column [-f filename] [-y]
 ```
 
 Config values include:
-* jira number: will be prepend to the multi-tenant change log file name
-* author name: use in the change log
+* jira number: will be prepended to the multi-tenant change log file name
+* author name: used in the change log
 * schema: multi tenant schema, default to (accelo_shared)
 * output file name: single tenant sql file name (without the extension)
