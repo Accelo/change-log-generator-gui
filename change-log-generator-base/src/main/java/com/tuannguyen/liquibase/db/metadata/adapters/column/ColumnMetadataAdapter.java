@@ -11,6 +11,9 @@ public interface ColumnMetadataAdapter
 
 	default boolean isValueComputed(String type, String defaultValue)
 	{
+		if (defaultValue == null) {
+			return false;
+		}
 		if (type.toLowerCase().startsWith("timestamp") && Arrays
 				.asList("now()", "current_timestamp", "current_timestamp()").contains(defaultValue.toLowerCase()))
 		{
